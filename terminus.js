@@ -1,7 +1,9 @@
-//DEVELOPMENT BUILD V0.0.0
-
-
-
+//DEVELOPMENT BUILD V5
+//Changelog:
+//Changed Version Format
+//Implemented the basics of the upgrade tier system. (Currently unused.)
+//Made INF upgrades increase in price.
+//Fixed seth bug reports.
 
 
 
@@ -24,26 +26,7 @@ function sleep(milliseconds) {
 //End of code i stole from stack overflow
 
 
-console.log("TO ENABLE PROGRAM, PLEASE USE FUNCTION bootup();");
-function bootup() {
-    console.log("ENABLING");
-    sleep(500);
-    console.log("COMPUTING JS BULLSHIT");
-    console.log("0%");
-    sleep(150);
-    console.log("7%");
-    sleep(50);
-    console.log("23%");
-    sleep(1500);
-    console.log("65%");
-    sleep(900);
-    console.log("87%");
-    sleep(750);
-    console.log("100%");
-    console.log("BOOTING FINISHED, WAIT FOR HELLO WORLD");
-    sleep(5000);
-console.log("hello world");
-console.log("Use info(); to get started");
+
 //The variables for determining how many points you make from any given update.
 var basegain = 1;
 var steponeadd = 0;
@@ -52,7 +35,9 @@ var stepthreemult = 1;
 var stepfouradd = 1;
 var points = 0;
 var upgbonusvar = 1
-}
+var upgpriceboost = 0;
+var upgstage = 1;
+
 
 function info() {
     console.log("Note that this game is played entirely in the js console.");
@@ -81,6 +66,7 @@ function update() {
 
 function infshop() {
     console.log("See code comments for upgrade descriptions")
+    if 
     console.log("Step one Upgrade.......$5....stepone();"); //Increases step 1 addition
     console.log("Step two Upgrade.......$25...steptwo();"); //Increases step 2 mult
     console.log("Step three Upgrade.....$25...stepthree();"); //Increases step 3 mult
@@ -92,8 +78,8 @@ function infshop() {
 }
 
 function stepone() {
-    if (points => 0) {
-        points = points - 5;
+    if (points >= 0) {
+        points = points - 5 - upgpriceboost;
     steponeadd = steponeadd + upgbonusvar;
     console.log("purchased stepone();")
     }
@@ -104,10 +90,11 @@ function stepone() {
 
 
 function steptwo() {
-    if (points => 0) {
-        points = points - 25;
+    if (points >= 0) {
+        points = points - 25 - upgpriceboost;
         steptwomult = steptwomult + upgbonusvar;
         console.log("purchased steptwo();")
+        upgpriceboost = upgpriceboost + 1;
     }
     else {
         console.log("ERROR CODE 85BB65");
@@ -116,10 +103,11 @@ function steptwo() {
 }
 
 function stepthree() {
-    if (points => 0) {
-        points = points - 25;
+    if (points >= 0) {
+        points = points - 25 - upgpriceboost;
         stepthreemult = stepthreemult + upgbonusvar;
         console.log("purchased stepthree();")
+        upgpriceboost = upgpriceboost + 1;
     }
     else {
         console.log("ERROR CODE 85BB65");
@@ -128,10 +116,11 @@ function stepthree() {
 }
 
 function stepfour() {
-    if (points => 0) {
-        points = points - 2;
+    if (points >= 0) {
+        points = points - 2 - upgpriceboost;
         stepfouraddition = stepfouraddition + upgbonusvar;
         console.log("purchased stepfour();");
+        upgpriceboost = upgpriceboost + 1;
     }
     else {
         console.log("ERROR CODE 85BB65");
@@ -139,10 +128,11 @@ function stepfour() {
 }
 
 function baseup() {
-    if (points =>0) {
-        points = points - 50;
+    if (points >= 0) {
+        points = points - 50 - upgpriceboost;
         basegain = basegain + upgbonusvar;
         console.log("purchased baseup();");
+        upgpriceboost = upgpriceboost + 1;
     }
     else {
         console.log("ERROR CODE 85BB65");
@@ -151,10 +141,11 @@ function baseup() {
 }
 
 function upgbonus() {
-    if (points => 0) {
-        points = points - 100;
+    if (points >= 0) {
+        points = points - 100 - upgpriceboost;
         upgbonusvar = upgbonusvar + 0.1;
         console.log("purchased upgbonus();");
+        upgpriceboost = upgpriceboost + 1;
     }
     else {
         console.log("ERROR CODE 85BB65");
