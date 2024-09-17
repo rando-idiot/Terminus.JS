@@ -10,3 +10,7 @@ Install the chrome extention (WIP)
 
 **Method THREE:**
 Add via bookmarklet (WIP)
+
+
+# __DISCORD__
+**https://discord.gg/kYyEQ2hjPs**
