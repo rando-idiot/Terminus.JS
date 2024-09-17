@@ -22,7 +22,7 @@ function sleep(milliseconds) {
 }
 //End of code i stole from stack overflow
 
-
+console.log("Hey btw type info for game info, if not, proceed.")
 
 //The variables for determining how many points you make from any given update.
 var basegain = 1;
