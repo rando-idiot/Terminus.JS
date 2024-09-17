@@ -1,9 +1,6 @@
-//DEVELOPMENT BUILD V5
+//DEVELOPMENT BUILD V6
 //Changelog:
-//Changed Version Format
-//Implemented the basics of the upgrade tier system. (Currently unused.)
-//Made INF upgrades increase in price.
-//Fixed seth bug reports.
+//Fixed the tier system not being properly unimplemented
 
 
 
@@ -66,18 +63,20 @@ function update() {
 
 function infshop() {
     console.log("See code comments for upgrade descriptions")
-    if 
+    if (upgstage == 1) {
     console.log("Step one Upgrade.......$5....stepone();"); //Increases step 1 addition
     console.log("Step two Upgrade.......$25...steptwo();"); //Increases step 2 mult
     console.log("Step three Upgrade.....$25...stepthree();"); //Increases step 3 mult
     console.log("Step four Upgrade......$2....stepfour();"); //Increases step 4 addition
-    console.log("Base increment Upgrade.$50...baseup();"); //Increases the base that is then multiplied etc etc
+    }
+    console.log("Base increment Upgrade.$500...baseup();"); //Increases the base that is then multiplied etc etc
     console.log("Upgrade bonus..........$100..upgbonus();"); //Increases how much upgrades upgrade stuff OTHER THAN ITSELF. THIS IS NOT EXPONENTIAL. YET. IDK GIMME AN ISSUE REPORT IF ITS UNFUN OR SMTH.
     console.log("hello world!...........$0....helloworld();"); //Prints "Hello world!" in console as many times as you have purchased upgbonus();
 
 }
 
 function stepone() {
+    if (upgstage == 1)  {
     if (points >= 0) {
         points = points - 5 - upgpriceboost;
     steponeadd = steponeadd + upgbonusvar;
@@ -86,10 +85,16 @@ function stepone() {
     else {
       console.log("ERROR CODE 85BB65");
     }
+    }
+    else {
+        console.log("Lol you leveled up too much krill issue.")
+
+    }
 }
 
 
 function steptwo() {
+    if (upgstage == 1) {
     if (points >= 0) {
         points = points - 25 - upgpriceboost;
         steptwomult = steptwomult + upgbonusvar;
@@ -100,9 +105,15 @@ function steptwo() {
         console.log("ERROR CODE 85BB65");
 
     }
+    }
+    else {
+        console.log("Lol you leveled up too much krill issue.")
+
+    }
 }
 
 function stepthree() {
+    if (upgstage == 1) {
     if (points >= 0) {
         points = points - 25 - upgpriceboost;
         stepthreemult = stepthreemult + upgbonusvar;
@@ -112,24 +123,34 @@ function stepthree() {
     else {
         console.log("ERROR CODE 85BB65");
     }
-
+    }
+    else {
+        console.log("Lol you leveled up too much krill issue.")
+    }
 }
 
 function stepfour() {
+    if (upgstage == 1) {
     if (points >= 0) {
         points = points - 2 - upgpriceboost;
         stepfouraddition = stepfouraddition + upgbonusvar;
         console.log("purchased stepfour();");
         upgpriceboost = upgpriceboost + 1;
     }
+    
     else {
         console.log("ERROR CODE 85BB65");
+    }
+    }
+    else {
+         console.log("Lol you leveled up too much krill issue.")
+
     }
 }
 
 function baseup() {
     if (points >= 0) {
-        points = points - 50 - upgpriceboost;
+        points = points - 500 - upgpriceboost;
         basegain = basegain + upgbonusvar;
         console.log("purchased baseup();");
         upgpriceboost = upgpriceboost + 1;
@@ -165,7 +186,3 @@ function helloworld() {
 }
 
 
-function errordetails() {
-    console.log("error 85BB65: Not Enough Money.")
-
-}
