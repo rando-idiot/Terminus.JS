@@ -44,7 +44,8 @@ var updateloop = 1;
 function info() {
     console.log("Note that this game is played entirely in the js console.");
     console.log("Use update(); to update your monies.");
-    console.log("fyi some mechanics of this game rely on update(); being manyally used so no, this isn't an idle game.");
+    console.log("fyi some mechanics of this game rely on update(); being manyally used so no, this isn't an idle game.");\
+    console.log("use shop(); to see the main shop");
     console.log("do infshop(); to view unlimitedly purchasable upgrades.");
 }
 
@@ -115,10 +116,13 @@ function shop() {
             else {
                 console.log("Cannot afford!");
             }
+            }
+            else {
             console.log("You already created index.html")
+            }
         }
 
-    }
+    
 
     var doctypebought = 0;
     function doctype() {
@@ -139,7 +143,7 @@ function shop() {
     }
 
     var configymlbought = 0;
-    function configYML(); {
+    function configYML() {
         if (configyml == 0) {
             if (points >= 0) {
                 configymlbought = 1;
@@ -162,16 +166,19 @@ function shop() {
             if (points >= 0) {
                 infunlock = 1;
                 upgstage = 1;
-                points = points - 500;
+                points = points - 500
             }
             else {
-                console.log("broke ass");
+                console.log("you are brokies :3")
             }
         }
         else {
             console.log("dude stop buying stuff you already bought lol");
         }
-        console.log("hackerman moment");
+
+    }
+    else {
+        console.log("how?")
     }
     }
 
@@ -185,13 +192,14 @@ function shop() {
                 else {
                     console.log("buy the previous push first!");
                     }
-            }
+                    }
             else {
                 console.log("come back when you're a little bit richer");
             }
         }
+        else {
         console.log("you havent unlocked infinite upgrades yet");
-
+        }
     }
 
 
@@ -387,7 +395,7 @@ function stepone2() {
     }
     }
 
-}
+
 
 
 function steptwo2() {
