@@ -44,7 +44,7 @@ var updateloop = 1;
 function info() {
     console.log("Note that this game is played entirely in the js console.");
     console.log("Use update(); to update your monies.");
-    console.log("fyi some mechanics of this game rely on update(); being manyally used so no, this isn't an idle game.");\
+    console.log("fyi some mechanics of this game rely on update(); being manyally used so no, this isn't an idle game.");
     console.log("use shop(); to see the main shop");
     console.log("do infshop(); to view unlimitedly purchasable upgrades.");
 }
