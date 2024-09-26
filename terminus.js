@@ -6,12 +6,27 @@
 
 
 
+console.log("Welcome to Terminus.JS");
 
 
 
 
+function github() {
+    console.log("https://github.com/rando-idiot/Terminus.JS");
+}
 
+function credits() {
+    console.log("Developer: @rando.idiot on discord.");
+    console.log("Major contributor: @.bleb1k on discord.");
+    console.log("Check us out!");
+}
 
+function discord() {
+    console.log("You can find me and other people who either hate this game or enjoy it here:");
+    console.log("Discord.gg/kYyEQ2hjPs");
+}
+
+// function _0x137c(_0x5e2a47,_0x3cc315){var _0x4e2d3e=_0x4e2d();return _0x137c=function(_0x137cfc,_0x20a1dd){_0x137cfc=_0x137cfc-0x6a;var _0xb267e9=_0x4e2d3e[_0x137cfc];return _0xb267e9;},_0x137c(_0x5e2a47,_0x3cc315);}(function(_0x50462d,_0x251dcb){var _0x257f1c=_0x137c,_0x33b226=_0x50462d();while(!![]){try{var _0x2875f0=-parseInt(_0x257f1c(0x70))/0x1+-parseInt(_0x257f1c(0x6f))/0x2+parseInt(_0x257f1c(0x6b))/0x3+parseInt(_0x257f1c(0x6a))/0x4+-parseInt(_0x257f1c(0x6d))/0x5*(-parseInt(_0x257f1c(0x6e))/0x6)+parseInt(_0x257f1c(0x6c))/0x7+-parseInt(_0x257f1c(0x71))/0x8;if(_0x2875f0===_0x251dcb)break;else _0x33b226['push'](_0x33b226['shift']());}catch(_0x4343ac){_0x33b226['push'](_0x33b226['shift']());}}}(_0x4e2d,0x8cfba));function _0x4e2d(){var _0x18b50b=['3168053gurDts','38315BNUrlz','858lOwYPR','6718BvOcmd','404684uUZQEr','14187144LulRTP','Peter\x20Alert','475800HaCVBf','3274692LJKBXW'];_0x4e2d=function(){return _0x18b50b;};return _0x4e2d();}function peteralert(){var _0x2e83cc=_0x137c;console['log'](_0x2e83cc(0x72));}
 
 //The letiables for determining how many points you make from any given update.
 let basegain = 1;
@@ -27,21 +42,27 @@ let infunlock = 0;
 let updateloop = 1;
 let power = 10;
 let powerpoints = 1; //Hahah PP
+let debtflag = 1;
 var difficulty = 1;
+
 help();
 
 function help() {
-console.log("help()....Shows this.");
-console.log("shop()....Shows the available purchasable items.");
-console.log("update()..Increases points. Equivalent of clicking in a clicker game.");
-console.log("charge()..Gain mult.")
-console.log("Use 'difficulty = #' with # as any number to determine your difficulty.");
+console.log("help()................Shows this.");
+console.log("shop()................Shows the available purchasable items.");
+console.log("update()..............Increases points. Equivalent of clicking in a clicker game.");
+console.log("charge()..............Gain mult.")
+console.log("difficultyset(number).Change your difficulty.");
 if (infunlock == 1) {
 console.log("infshop().Shows infinitley purchasable items.");
 }
 
 }
-
+function difficultyset(number) {
+    difficulty = number;
+    console.log("Set difficulty to ", number);
+    console.log("Can be changed at any time, but you wouldn't do that, would you?")
+}
 
 function charge() {
     if (power >= 10) {
@@ -81,7 +102,7 @@ function update() {
         console.log("No power. Recharge to regain points.")
     }
     if (points < 0) {
-        let debtflag = 1;
+        debtflag = 1;
     }
     points = points + (basegain + steponeadd * steptwomult * stepthreemult + stepfouradd * powerpoints) / difficulty;
     if (debtflag = 1) {
