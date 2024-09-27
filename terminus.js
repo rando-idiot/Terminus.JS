@@ -1,6 +1,5 @@
-//V14 DEV BRANCH
-//to be perfectly honest i have no idea what i did so 🤷 also yes i did just use an emoji in code shut up.
-
+//V14 
+//Did some stuff, added some things.
 
 
 
@@ -26,7 +25,6 @@ function discord() {
     console.log("Discord.gg/kYyEQ2hjPs");
 }
 
-// function _0x137c(_0x5e2a47,_0x3cc315){var _0x4e2d3e=_0x4e2d();return _0x137c=function(_0x137cfc,_0x20a1dd){_0x137cfc=_0x137cfc-0x6a;var _0xb267e9=_0x4e2d3e[_0x137cfc];return _0xb267e9;},_0x137c(_0x5e2a47,_0x3cc315);}(function(_0x50462d,_0x251dcb){var _0x257f1c=_0x137c,_0x33b226=_0x50462d();while(!![]){try{var _0x2875f0=-parseInt(_0x257f1c(0x70))/0x1+-parseInt(_0x257f1c(0x6f))/0x2+parseInt(_0x257f1c(0x6b))/0x3+parseInt(_0x257f1c(0x6a))/0x4+-parseInt(_0x257f1c(0x6d))/0x5*(-parseInt(_0x257f1c(0x6e))/0x6)+parseInt(_0x257f1c(0x6c))/0x7+-parseInt(_0x257f1c(0x71))/0x8;if(_0x2875f0===_0x251dcb)break;else _0x33b226['push'](_0x33b226['shift']());}catch(_0x4343ac){_0x33b226['push'](_0x33b226['shift']());}}}(_0x4e2d,0x8cfba));function _0x4e2d(){var _0x18b50b=['3168053gurDts','38315BNUrlz','858lOwYPR','6718BvOcmd','404684uUZQEr','14187144LulRTP','Peter\x20Alert','475800HaCVBf','3274692LJKBXW'];_0x4e2d=function(){return _0x18b50b;};return _0x4e2d();}function peteralert(){var _0x2e83cc=_0x137c;console['log'](_0x2e83cc(0x72));}
 
 //The letiables for determining how many points you make from any given update.
 let basegain = 1;
@@ -43,7 +41,7 @@ let updateloop = 1;
 let power = 10;
 let powerpoints = 1; //Hahah PP
 let debtflag = 1;
-var difficulty = 1;
+let difficulty = 1;
 
 help();
 
@@ -53,6 +51,9 @@ console.log("shop()................Shows the available purchasable items.");
 console.log("update()..............Increases points. Equivalent of clicking in a clicker game.");
 console.log("charge()..............Gain mult.")
 console.log("difficultyset(number).Change your difficulty.");
+console.log("github()..............Shows the github repo link.");
+console.log("credits().............Shows the credits.");
+console.log("discord().............Gives a link to the terminus.js discord.");
 if (infunlock == 1) {
 console.log("infshop().Shows infinitley purchasable items.");
 }
@@ -105,7 +106,7 @@ function update() {
         debtflag = 1;
     }
     points = points + (basegain + steponeadd * steptwomult * stepthreemult + stepfouradd * powerpoints) / difficulty;
-    if (debtflag = 1) {
+    if (debtflag == 1) {
         if (points < 0) {
             points = 0;
             debtflag = 0;
@@ -118,6 +119,7 @@ function update() {
     console.log("you have ", points, " points");
 }
 function shop() {
+    console.log("You have ", points, " points");
     if (beginbought == 0) {
     console.log("The beginning......$5....begin();");
     }
@@ -155,7 +157,9 @@ function shop() {
         else {
             console.log("You already began.");
         }
+        console.log("You have ", points, " points");
     }
+    
 
     let indexbought = 0;
     function index() {
@@ -172,13 +176,14 @@ function shop() {
             else {
             console.log("You already created index.html")
             }
+            console.log("You have ", points, " points");
         }
 
     
 
     let doctypebought = 0;
     function doctype() {
-        if (doctypebought = 0) {
+        if (doctypebought == 0) {
             if (points >= 0) {
                 doctypebought = 1;
                 stepthreemult = stepthreemult + 0.5;
@@ -192,6 +197,7 @@ function shop() {
         else {
                 console.log("You- YOU ALREADY ADDED <!DOCTYPE HTML> YOU DONT NEED TO PUT IT EVERY TIME YOU ADD <BODY> STOP PLEASE");
             }
+            console.log("You have ", points, " points");
     }
 
     let configymlbought = 0;
@@ -209,6 +215,7 @@ function shop() {
         else {
             console.log("You already bought this.");
         }
+        console.log("You have ", points, " points");
 
     }
 
@@ -219,6 +226,7 @@ function shop() {
                 infunlock = 1;
                 upgstage = 1;
                 points = points - 500 * difficulty;
+                console.log("You've unlocked the infshop. Check help() for details.");
             }
             else {
                 console.log("you are brokies :3")
@@ -227,11 +235,12 @@ function shop() {
         else {
             console.log("dude stop buying stuff you already bought lol");
         }
-
+        
     }
     else {
         console.log("how?")
     }
+    console.log("You have ", points, " points");
     }
 
     function push2() {
@@ -252,12 +261,14 @@ function shop() {
         else {
         console.log("you havent unlocked infinite upgrades yet");
         }
+        console.log("You have ", points, " points");
     }
 
 
 
 
 function infshop() {
+    
     if (infunlock == 1) {
     console.log("See code comments for upgrade descriptions")
     if (upgstage == 1) {
@@ -280,6 +291,7 @@ function infshop() {
     else {
         console.log("You have not unlocked infinite upgrades.");
     }
+    
 }
 
 function stepone() {
@@ -303,6 +315,7 @@ function stepone() {
 else {
     console.log("You have not unlocked infinite upgrades.");
 }
+console.log("You have ", points, " points");
 }
 
 
@@ -328,6 +341,7 @@ function steptwo() {
  else {
      console.log("You have not unlocked infinite upgrades.");
      }
+     console.log("You have ", points, " points");
 }
 
 function stepthree() {
@@ -350,6 +364,7 @@ function stepthree() {
 else {
      console.log("You have not unlocked infinite upgrades.");
 }
+console.log("You have ", points, " points");
 }
 
 function stepfour() {
@@ -392,6 +407,7 @@ function baseup() {
 else {
  console.log("You have not unlocked infinite upgrades.");
  }
+ console.log("You have ", points, " points");
 }
 
 function upgbonus() {
@@ -410,6 +426,7 @@ function upgbonus() {
 else {
      console.log("You have not unlocked infinite upgrades.");
 }
+console.log("You have ", points, " points");
 }
 
 function helloworld() {
@@ -421,6 +438,7 @@ function helloworld() {
     else {
         prompt("Monster.");
     }
+    console.log("You have ", points, " points");
 }
 
 
@@ -445,6 +463,7 @@ function stepone2() {
     else {
       console.log("You have not unlocked infinite upgrades.");
     }
+    console.log("You have ", points, " points");
     }
 
 
@@ -472,6 +491,7 @@ function steptwo2() {
     else {
         console.log("You have not unlocked infinite upgrades.");
     }
+    console.log("You have ", points, " points");
 }
 
 function stepthree2() {
@@ -494,6 +514,7 @@ function stepthree2() {
     else {
         console.log("You have not unlocked infinite upgrades.");
     }
+    console.log("You have ", points, " points");
 }
 
 function stepfour2() {
@@ -518,4 +539,5 @@ function stepfour2() {
     else {
         console.log("You have not unlocked infinite upgrades.");
     }
+    console.log("You have ", points, " points");
 }
