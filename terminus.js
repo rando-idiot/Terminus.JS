@@ -1,5 +1,7 @@
-//V14 
-//Did some stuff, added some things.
+//V16 DEV
+//Bug fixes and achievements.
+//Battery based reworks.
+//Hints
 
 
 
@@ -7,8 +9,45 @@
 
 console.log("Welcome to Terminus.JS");
 
-
-
+hints();
+function hints() {
+    let x = Math.random() * 10
+    x = Math.round(x);
+    console.log("Fun fact:")
+    if (x == 1) {
+        console.log("Power mult = power / 10");
+    } 
+    if (x == 2) {
+        console.log("help() can update its contents based on the things you have purchased.");
+    }
+    if (x == 3) {
+        console.log("PLACEHOLDER");
+    }
+    if (x == 4) {
+        console.log("PLACEHOLDER");
+    }
+    if (x == 5) {
+        console.log("PLACEHOLDER");
+    }
+    if (x == 6) {
+        console.log("PLACEHOLDER");
+    }
+    if (x == 7) {
+        console.log("PLACEHOLDER");
+    }
+    if (x == 8) {
+        console.log("PLACEHOLDER");
+    }
+    if (x == 9) {
+        console.log("PLACEHOLDER");
+    }
+    if (x == 10) {
+        console.log("PLACEHOLDER");
+    }
+    if (x == 0) {
+        console.log("no.");
+    }
+}
 
 function github() {
     console.log("https://github.com/rando-idiot/Terminus.JS");
@@ -33,7 +72,7 @@ let steptwomult = 1;
 let stepthreemult = 1;
 let stepfouradd = 1;
 let points = 0;
-let upgbonuslet = 1
+let upgradebonus = 1
 let upgpriceboost = 0;
 let upgstage = 0;
 let infunlock = 0;
@@ -42,6 +81,19 @@ let power = 10;
 let powerpoints = 1; //Hahah PP
 let debtflag = 1;
 let difficulty = 1;
+let maxbattery = 15;
+let rechargerate = 1;
+let antipower = 10;
+const DEBUG_MODE = false;
+
+function pointsset(set) {
+    if (DEBUG_MODE) {
+    points = set;
+    }
+    else {
+        console.log("Nice try.");
+    }
+}
 
 help();
 
@@ -55,7 +107,10 @@ console.log("github()..............Shows the github repo link.");
 console.log("credits().............Shows the credits.");
 console.log("discord().............Gives a link to the terminus.js discord.");
 if (infunlock == 1) {
-console.log("infshop().Shows infinitley purchasable items.");
+console.log("infshop().............Shows infinitley purchasable items.");
+}
+if (DEBUG_MODE) {
+    console.log("pointsset(set)....Sets your points.");
 }
 
 }
@@ -66,46 +121,30 @@ function difficultyset(number) {
 }
 
 function charge() {
-    if (power >= 10) {
-        if (power <= 14) {
-        power = 15;
-        }
-    }
-    else if (power == 15){
-        console.log("Fully charged");
-    }
-    else if (power <= 9) {
-        if (power <= 6) {
-        power = 10;
-        }
-    }
-    else if (power <= 5) {
-        power = 10;
-    }
+if (power == maxbattery) {
+    console.log("Full charge.");
+}
+else {
+    power = power + rechargerate;
+    console.log("Current battery: ", power);
+}
 }
 
 
-
 function update() {
-    if (power == 15) {
-        powerpoints = 1.5
-        console.log("Full power. * 1.5 bonus");
+    if (power > 0) {
+        powerpoints = power / antipower;
+        power = power - 1;
     }
-    else if (power >= 10) {
-        powerpoints = 1
+    else {
+        console.log("No power.")
     }
-    else if (power >= 6) {
-        powerpoints = 0.5
-        console.log("Low Power.");
-    }
-    else if (power == 0) {
-        powerpoints = 0;
-        console.log("No power. Recharge to regain points.")
-    }
+    
     if (points < 0) {
         debtflag = 1;
     }
     points = points + (basegain + steponeadd * steptwomult * stepthreemult + stepfouradd * powerpoints) / difficulty;
+    checkAchievements();
     if (debtflag == 1) {
         if (points < 0) {
             points = 0;
@@ -117,6 +156,7 @@ function update() {
         }
     }
     console.log("you have ", points, " points");
+    
 }
 function shop() {
     console.log("You have ", points, " points");
@@ -272,21 +312,22 @@ function infshop() {
     if (infunlock == 1) {
     console.log("See code comments for upgrade descriptions")
     if (upgstage == 1) {
-    console.log("Step one Upgrade.......$5+....stepone();"); //console.log("Increases step 1 addition")
-    console.log("Step two Upgrade.......$25+...steptwo();"); //console.log("Increases step 2 mult")
-    console.log("Step three Upgrade.....$25+...stepthree();"); //console.log("Increases step 3 mult")
-    console.log("Step four Upgrade......$2+....stepfour();"); //console.log("Increases step 4 addition")
+    console.log("Step one Upgrade.......$5+....stepone();"); console.log("Increases step 1 addition");
+    console.log("Step two Upgrade.......$25+...steptwo();"); console.log("Increases step 2 multiplier");
+    console.log("Step three Upgrade.....$25+...stepthree();"); console.log("Increases step 3 multiplier");
+    console.log("Step four Upgrade......$2+....stepfour();"); console.log("Increases step 4 addition");
     }
     if (upgstage == 2) {
-        console.log("Step one Upgrade 2....$20+.....stepone2();"); //Increases step 1 addition but better
-        console.log("Step two Upgrade 2....$100+....steptwo2();"); //Increases step 2 mult but better
-        console.log("Step three Upgrade 3..$100+....stepthree2();"); //Increases step 3 mult but better
-        console.log("Step four Upgrade 4...$8+......stepfour2();"); //Increases step 4 addition but better
+        console.log("Step one Upgrade 2....$20+.....stepone2();"); console.log("Increases step 1 addition but better")
+        console.log("Step two Upgrade 2....$100+....steptwo2();"); console.log("Increases step 2 mult but better")
+        console.log("Step three Upgrade 3..$100+....stepthree2();"); console.log("Increases step 3 mult but better")
+        console.log("Step four Upgrade 4...$8+......stepfour2();"); console.log("Increases step 4 addition but better")
+        console.log("Max battery Upgrade............maxpowerup();"); console.log("Increases the maximum battery.")
 
     }
-    console.log("Base increment Upgrade.$500+...baseup();"); //Increases the base that is then multiplied etc etc
-    console.log("Upgrade bonus..........$100+..upgbonus();"); //Increases how much upgrades upgrade stuff OTHER THAN ITSELF. THIS IS NOT EXPONENTIAL. YET. IDK GIMME AN ISSUE REPORT IF ITS UNFUN OR SMTH.
-    console.log("hello world!...........$0....helloworld();"); //Prints "Hello world!" in console as many times as you have purchased upgbonus();
+    console.log("Base increment Upgrade.$500+...baseup();"); console.log("Increases the base that is then multiplied etc etc");
+    console.log("Upgrade bonus..........$100+..upgbonus();"); console.log("Increases how much upgrades upgrade stuff OTHER THAN ITSELF.");
+    console.log("hello world!...........$0....helloworld();"); console.log("Prints 'Hello world!' in console.");
     }
     else {
         console.log("You have not unlocked infinite upgrades.");
@@ -299,12 +340,12 @@ function stepone() {
     if (upgstage == 1)  {
     if (points >= 0) {
         points = points - 5 - upgpriceboost * difficulty;
-    steponeadd = steponeadd + upgbonuslet;
+    steponeadd = steponeadd + upgradebonus;
     console.log("purchased stepone();")
     upgpriceboost = upgpriceboost + 1;
     }
     else {
-      console.log("ERROR CODE 85BB65");
+      console.log("You don't have enough money");
     }
     }
     else {
@@ -324,12 +365,12 @@ function steptwo() {
     if (upgstage == 1) {
     if (points >= 0) {
         points = points - 25 - upgpriceboost * difficulty;
-        steptwomult = steptwomult + upgbonuslet;
+        steptwomult = steptwomult + upgradebonus;
         console.log("purchased steptwo();")
         upgpriceboost = upgpriceboost + 1;
     }
     else {
-        console.log("ERROR CODE 85BB65");
+        console.log("You don't have enough money");
 
     }
     }
@@ -349,12 +390,12 @@ function stepthree() {
     if (upgstage == 1) {
     if (points >= 0) {
         points = points - 25 - upgpriceboost * difficulty;
-        stepthreemult = stepthreemult + upgbonuslet;
+        stepthreemult = stepthreemult + upgradebonus;
         console.log("purchased stepthree();")
         upgpriceboost = upgpriceboost + 1;
     }
     else {
-        console.log("ERROR CODE 85BB65");
+        console.log("You don't have enough money");
     }
     }
     else {
@@ -372,13 +413,13 @@ function stepfour() {
     if (upgstage == 1) {
     if (points >= 0) {
         points = points - 2 - upgpriceboost * difficulty;
-        stepfouraddition = stepfouraddition + upgbonuslet;
+        stepfouraddition = stepfouraddition + upgradebonus;
         console.log("purchased stepfour();");
         upgpriceboost = upgpriceboost + 1;
     }
     
     else {
-        console.log("ERROR CODE 85BB65");
+        console.log("You don't have enough money");
     }
     }
     else {
@@ -395,12 +436,12 @@ function baseup() {
     if (infunlock == 1) {
     if (points >= 0) {
         points = points - 500 - upgpriceboost * difficulty;
-        basegain = basegain + upgbonuslet;
+        basegain = basegain + upgradebonus;
         console.log("purchased baseup();");
         upgpriceboost = upgpriceboost + 1;
     }
     else {
-        console.log("ERROR CODE 85BB65");
+        console.log("You don't have enough money");
 
     }
 }
@@ -414,12 +455,12 @@ function upgbonus() {
     if (infunlock == 1) {
     if (points >= 0) {
         points = points - 100 - upgpriceboost * difficulty;
-        upgbonuslet = upgbonuslet + 0.1;
-        console.log("purchased upgbonus();");
+        upgradebonus = upgradebonus + 0.1;
+        console.log("purchased upgradebonus();");
         upgpriceboost = upgpriceboost + 1;
     }
     else {
-        console.log("ERROR CODE 85BB65");
+        console.log("You don't have enough money");
     }
 
 }
@@ -430,15 +471,7 @@ console.log("You have ", points, " points");
 }
 
 function helloworld() {
-    console.log("hello world");
-    let helloworld = prompt("Hello World?")
-    if (helloworld=="Hello World") {
-       prompt("Yay!");
-    }
-    else {
-        prompt("Monster.");
-    }
-    console.log("You have ", points, " points");
+    console.log("Hello world!");
 }
 
 
@@ -447,13 +480,16 @@ function stepone2() {
     if (upgstage == 2)  {
     if (points >= 0) {
         points = points - 20 - upgpriceboost * difficulty;
-    steponeadd = steponeadd + upgbonuslet;
+    steponeadd = steponeadd + upgradebonuslet;
     console.log("purchased stepone();")
     upgpriceboost = upgpriceboost + 1;
     }
     else {
-      console.log("ERROR CODE 85BB65");
+      console.log("You don't have enough money");
     }
+    }
+    else if (upgstage < 2) {
+        console.log("You are too low level.")
     }
     else {
         console.log("Lol you leveled up too much krill issue.")
@@ -474,14 +510,17 @@ function steptwo2() {
     if (upgstage == 2) {
     if (points >= 0) {
         points = points - 100 - upgpriceboost * difficulty;
-        steptwomult = steptwomult + upgbonuslet;
+        steptwomult = steptwomult + upgradebonuslet;
         console.log("purchased steptwo();")
         upgpriceboost = upgpriceboost + 1;
     }
     else {
-        console.log("ERROR CODE 85BB65");
+        console.log("You don't have enough money");
 
     }
+    }
+    else if (upgstage < 2) {
+        console.log("You are too low level.")
     }
     else {
         console.log("Lol you leveled up too much krill issue.")
@@ -499,13 +538,16 @@ function stepthree2() {
     if (upgstage == 2) {
     if (points >= 0) {
         points = points - 100 - upgpriceboost * difficulty;
-        stepthreemult = stepthreemult + upgbonuslet;
+        stepthreemult = stepthreemult + upgradebonuslet;
         console.log("purchased stepthree();")
         upgpriceboost = upgpriceboost + 1;
     }
     else {
-        console.log("ERROR CODE 85BB65");
+        console.log("You don't have enough money");
     }
+    }
+    else if (upgstage < 2) {
+        console.log("You are too low level.")
     }
     else {
         console.log("Lol you leveled up too much krill issue.")
@@ -522,14 +564,17 @@ function stepfour2() {
     if (upgstage == 2) {
     if (points >= 0) {
         points = points - 8 - upgpriceboost * difficulty;
-        stepfouraddition = stepfouraddition + upgbonuslet;
+        stepfouraddition = stepfouraddition + upgradebonuslet;
         console.log("purchased stepfour();");
         upgpriceboost = upgpriceboost + 1;
     }
     
     else {
-        console.log("ERROR CODE 85BB65");
+        console.log("You don't have enough money");
     }
+    }
+    else if (upgstage < 2) {
+        console.log("You are too low level.")
     }
     else {
          console.log("Lol you leveled up too much krill issue.")
@@ -540,4 +585,75 @@ function stepfour2() {
         console.log("You have not unlocked infinite upgrades.");
     }
     console.log("You have ", points, " points");
+}
+
+function maxpowerup() {
+    if (infunlock == 1) {
+    if (upgstage >= 2) {
+    if (points >= 0) {
+        points = points - 800 - upgpriceboost * difficulty;
+        stepfouraddition = stepfouraddition + upgradebonuslet;
+        console.log("purchased maxpowerup();");
+        maxbattery = maxbattery + 1; 
+    }
+    
+    else {
+        console.log("You don't have enough money");
+    }
+    }
+    else {
+         console.log("You have not leveled up enough");
+
+    }
+    }
+    else {
+        console.log("You have not unlocked infinite upgrades.");
+    }
+    console.log("You have ", points, " points");
+}
+
+
+
+
+// STUPID FUCKING IDEA
+const achievements = [
+    {
+        id: 1,
+        name: "Well, it's a start.",
+        description: "Earn your first point.",
+        criteria: () => points >= 1,
+        achieved: false,
+    },
+    {
+        id: 2,
+        name: "Broke ass",
+        description: "Collect 100 points.",
+        criteria: () => points >= 100,
+        achieved: false,
+    },
+    {
+        id: 3,
+        name: "Full battery",
+        description: "Reach full power.",
+        criteria: () => power === 15,
+        achieved: false,
+    },
+    {
+        id: 4,
+        name: "Overcharged",
+        description: "Get a power value over the default maximum.",
+        criteria: () => power > 15,
+        achieved: false,
+    },
+
+];
+
+
+function checkAchievements() {
+    achievements.forEach((achievement) => {
+        if (!achievement.achieved && achievement.criteria()) {
+            achievement.achieved = true; 
+            console.log(`You got: ${achievement.name} - ${achievement.description}`);
+        }
+    });
 }
