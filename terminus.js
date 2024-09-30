@@ -5,7 +5,7 @@
 
 console.log("Welcome to Terminus.JS");
 
-hints();
+console.log(hints());
 function hints(force = 0) {
     const list = [
         "You can generate points by calling update().",
@@ -49,7 +49,7 @@ let game = {
         push2: false,
         infshop: false,
     },
-    infstage: false,
+    infstage: 0,
     points: 0,
     steponeadd: 0,
     steptwomult: 1,
@@ -84,7 +84,7 @@ function help() {
         "help()................Shows this.",
         "shop()................Shows the available purchasable items.",
         "update()..............Increases points. Equivalent of clicking in a clicker game.",
-        "charge()..............Gain mult.",
+        "charge()..............Gain power.",
         "difficultyset(number).Change your difficulty.",
         "github()..............Shows the github repo link.",
         "credits().............Shows the credits.",
@@ -92,7 +92,7 @@ function help() {
         "hints()...............Shows a hint.",
         "checkAchievements()...Shows your current achievements.",
     ];
-    if (game.unlocks.infshop == 1) {
+    if (game.unlocks.infshop) {
         list.push("infshop().............Shows infinitley purchasable items.");
     }
     if (DEBUG_MODE) list.push("pointsset(set)....Sets your points.");
@@ -214,6 +214,7 @@ function push1() {
         return console.log("you are brokies :3");
     }
 
+    game.unlocks.infshop = true;
     game.infstage = 1;
     game.upgstage = 1;
     game.points -= 500 * game.difficulty;
@@ -241,7 +242,7 @@ function infshop() {
         return console.log("You have not unlocked infinite upgrades.");
     }
 
-    const list = game.infstage === 1
+    let list = game.infstage === 1
         ? [ // todo: Export cost calculations
             `stepone(): $${
                 5 + game.upgpriceboost * game.difficulty
@@ -278,17 +279,16 @@ function infshop() {
         ...list,
         `baseup(): $${
             500 + game.upgpriceboost * game.difficulty
-        }...........Increases the base that is then multiplied etc etc``upgbonus(): $${
+        }...........Increases the base that is then multiplied etc etc`,
+        `upgbonus(): $${
             100 + game.upgpriceboost * game.difficulty
         }..........Increases how much upgrades upgrade stuff OTHER THAN ITSELF.`,
-        `helloworld(): $${
-            0 + game.upgpriceboost * game.difficulty
-        }...........Prints 'Hello world!' in console.`,
+        `helloworld(): $0...........Prints 'Hello world!' in console.`,
     ];
 
     console.log("See code comments for upgrade descriptions"); // should this be here?
 
-    list.forEach(console.log);
+    return list.join("\n");
 }
 
 function stepone() {
@@ -529,7 +529,7 @@ const achievements = [
         id: 3,
         name: "Full battery",
         description: "Reach full power.",
-        criteria: () => game.power === 15,
+        criteria: () => game.power == 15,
         achieved: false,
     },
     {
