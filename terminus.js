@@ -6,45 +6,15 @@
 console.log("Welcome to Terminus.JS");
 
 hints();
-function hints() {
-    let x = Math.random() * 10;
-    x = Math.round(x);
-    console.log("Fun fact:");
-    if (x == 1) {
-        console.log("Power mult = power / 10");
-    }
-    if (x == 2) {
-        console.log(
-            "help() can update its contents based on the things you have purchased.",
-        );
-    }
-    if (x == 3) {
-        console.log("PLACEHOLDER");
-    }
-    if (x == 4) {
-        console.log("PLACEHOLDER");
-    }
-    if (x == 5) {
-        console.log("PLACEHOLDER");
-    }
-    if (x == 6) {
-        console.log("PLACEHOLDER");
-    }
-    if (x == 7) {
-        console.log("PLACEHOLDER");
-    }
-    if (x == 8) {
-        console.log("PLACEHOLDER");
-    }
-    if (x == 9) {
-        console.log("PLACEHOLDER");
-    }
-    if (x == 10) {
-        console.log("PLACEHOLDER");
-    }
-    if (x == 0) {
-        console.log("no.");
-    }
+function hints(force = 0) {
+    const list = [
+        "You can generate points by calling update().",
+        "Power mult = power / 10",
+        "help() can update its contents based on the things you have purchased.",
+        "You can change your difficulty by calling difficultyset(number)",
+        "You can get more hints by calling hints().",
+    ];
+    console.log(list[Math.round(Math.random() * list.length)]);
 }
 
 function github() {
@@ -52,9 +22,11 @@ function github() {
 }
 
 function credits() {
-    console.log("Developer: @rando.idiot on discord.");
-    console.log("Major contributor: @.bleb1k on discord.");
-    console.log("Check us out!");
+    console.log(
+        "Developer: @rando.idiot on discord.",
+        "\nMajor contributor: @.bleb1k on discord.",
+        "\nCheck us out!",
+    );
 }
 
 function discord() {
