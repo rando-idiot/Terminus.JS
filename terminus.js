@@ -36,26 +36,38 @@ function discord() {
     console.log("Discord.gg/kYyEQ2hjPs");
 }
 
-//The letiables for determining how many points you make from any given update.
-let basegain = 1;
-let steponeadd = 0;
-let steptwomult = 1;
-let stepthreemult = 1;
-let stepfouradd = 1;
-let points = 0;
-let upgradebonus = 1;
-let upgpriceboost = 0;
-let upgstage = 0;
-let infunlock = 0;
-let updateloop = 1;
-let power = 10;
-let powerpoints = 1; //Hahah PP
-let debtflag = 1;
-let difficulty = 1;
-let maxbattery = 15;
-let rechargerate = 1;
-let antipower = 10;
 const DEBUG_MODE = false;
+
+//The object for determining how many points you make from any given update.
+let game = {
+    unlocks: {
+        begin: false,
+        index: false,
+        doctype: false,
+        configyml: false,
+        push1: false,
+        push2: false,
+        infshop: false,
+    },
+    infstage: false,
+    points: 0,
+    steponeadd: 0,
+    steptwomult: 1,
+    stepthreemult: 1,
+    stepfouradd: 1,
+    basegain: 1,
+    upgradebonus: 1,
+    upgpriceboost: 0,
+    upgstage: 0,
+    updateloop: 1,
+    power: 10,
+    powerpoints: 1, //Hahah PP
+    indebted: 1,
+    difficulty: 1,
+    maxbattery: 15,
+    rechargerate: 1,
+    antipower: 10,
+};
 
 function pointsset(set) {
     if (DEBUG_MODE) {
@@ -90,7 +102,7 @@ function help() {
     }
 }
 function difficultyset(number) {
-    difficulty = number;
+    gamestate.difficulty = number;
     console.log("Set difficulty to ", number);
     console.log(
         "Can be changed at any time, but you wouldn't do that, would you?",
