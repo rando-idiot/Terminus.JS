@@ -17,3 +17,6 @@ Add via bookmarklet (WIP)
 
 # __about:blank__
 It is recommended to try using this game on the about:blank page as it has literally nothing in it. Or try using a javascript playground thingy. Idk. Pick your thingy.
+
+# __NODE.JS__
+If you wish to run this on your personal computer, install node.js and open the terminus.js file with it. 
