@@ -1,543 +1,719 @@
-//V14 
-//Did some stuff, added some things.
-
-
-
-
+//V18 
+//Coordinates
+//Item system
 
 console.log("Welcome to Terminus.JS");
 
-
-
+console.log(hints());
+function hints(force = 0) {
+    const list = [
+        "You can generate points by calling update().",
+        "Power mult = power / 10",
+        "help() can update its contents based on the things you have purchased.",
+        "You can change your difficulty by calling difficultyset(number)",
+        "You can get more hints by calling hints().",
+    ];
+    return list[Math.floor(Math.random() * list.length)];
+}
 
 function github() {
-    console.log("https://github.com/rando-idiot/Terminus.JS");
+    return "https://github.com/rando-idiot/Terminus.JS";
 }
 
 function credits() {
-    console.log("Developer: @rando.idiot on discord.");
-    console.log("Major contributor: @.bleb1k on discord.");
-    console.log("Check us out!");
+    return [
+        "Developer: @rando.idiot on discord.",
+        "Major contributor: @.bleb1k on discord.",
+        "Check us out!",
+    ].join("\n");
 }
 
 function discord() {
-    console.log("You can find me and other people who either hate this game or enjoy it here:");
-    console.log("Discord.gg/kYyEQ2hjPs");
+    return [
+        "You can find me and other people who either hate this game or enjoy it here:",
+        "Discord.gg/kYyEQ2hjPs",
+    ].join("\n");
 }
 
+const DEBUG_MODE = false;
 
-//The letiables for determining how many points you make from any given update.
-let basegain = 1;
-let steponeadd = 0;
-let steptwomult = 1;
-let stepthreemult = 1;
-let stepfouradd = 1;
-let points = 0;
-let upgbonuslet = 1
-let upgpriceboost = 0;
-let upgstage = 0;
-let infunlock = 0;
-let updateloop = 1;
-let power = 10;
-let powerpoints = 1; //Hahah PP
-let debtflag = 1;
-let difficulty = 1;
+//The object for determining how many points you make from any given update.
+let game = {
+    unlocks: {
+        begin: false,
+        index: false,
+        doctype: false,
+        configyml: false,
+        push1: false,
+        push2: false,
+        push3: false,
+        infshop: false,
+    },
+    infstage: 0,
+    points: 0,
+    steponeadd: 0,
+    steptwomult: 1,
+    stepthreemult: 1,
+    stepfouradd: 1,
+    basegain: 1,
+    upgradebonus: 1,
+    upgpriceboost: 0,
+    upgstage: 0,
+    updateloop: 1,
+    power: 10,
+    powerpoints: 1, //Hahah PP
+    indebted: 1,
+    difficulty: 1,
+    maxbattery: 15,
+    rechargerate: 1,
+    antipower: 10,
+    itemduration: 0,
+};
+//Used for determining the position of the player. Called in the case of item collecting.
+let playerpositiondata = {
+    playerx: 0,
+    playery: 0,
+    playerz: 0,
+};
+let itemkey = {
+    helditem: 0,
+    totalitems: 3,
+    itemid0: {
+        name: "N/A",
+        description: "This is not an item"
+    },
+    itemid1: {
+        name: "Battery",
+        description: "Refills battery"
+    },
+    itemid2: {
+        name: "Get Rich Quick!",
+        description: "Gain 2 updates worth of points"
+    },
+    itemid3: {
+        name: "MultBox",
+        description: "Gain *2 points per update() for 3 updates()"
+    }
 
-help();
+}
+let itemposition = {
+    itemx: randomnumbah(-100, 100),
+    itemy: randomnumbah(-100, 100),
+    itemz: randomnumbah(-100, 100),
+    itemtype: randomnumbah(1, itemkey.totalitems),
+}
+function randomnumbah(min, max) { 
+    return Math.floor(Math.random() * (max - min + 1) + min);
+  }
+function useheld() {
+    if (itemkey.helditem === 0) {
+        console.log("You aren't holding anything.");
+    }
+    else if (itemkey.helditem === 1) {
+        console.log("Used ", itemkey.itemid1.name);
+        game.power = game.maxbattery;
+    }
+    else if (itemkey.helditem === 2) {
+        console.log("Used ", itemkey.itemid2.name);
+        pointcalc();
+    }
+    else if (itemkey.helditem === 3) {
+        console.log("Used ", itemkey.itemid3.name);
+        game.itemduration = 3
+        game.itemmult = 2
+    }
+} 
+function roam() {   //I realize now this is probably the longest function in the program. lol. (also this is probably excruciatingly hard to read and inefficient so im sorry if you're reading this (yes ))
+    xroam = randomnumbah(1, 3);
+    yroam = randomnumbah(1, 3);
+    zroam = randomnumbah(1, 3);
 
+    //roam function on the x axis. 
+    if (xroam == 1) {
+        playerpositiondata.playerx = playerpositiondata.playerx - 1;
+        if (playerpositiondata.playerx === -100) {
+            return "Wall hit.";
+        }
+        if (playerpositiondata.playerx === 100) {
+            return "Wall hit.";
+        }
+    }
+        if (xroam == 2) {
+            playerpositiondata.playerx = playerpositiondata.playerx - 0;
+            if (playerpositiondata.playerx === -100) {
+                return "Wall hit.";
+            }
+            if (playerpositiondata.playerx === 100) {
+                return "Wall hit.";
+            }
+        }
+        if (xroam == 3) {
+            playerpositiondata.playerx = playerpositiondata.playerx + 1;
+            if (playerpositiondata.playerx === -100) {
+                return "Wall hit.";
+            }
+            if (playerpositiondata.playerx === 100) {
+                return "Wall hit.";
+            }
+        }
+
+        //roam function on the y axis
+        if (yroam == 1) {
+            playerpositiondata.playery = playerpositiondata.playery - 1;
+            if (playerpositiondata.playery === -100) {
+                return "Wall hit.";
+            }
+            if (playerpositiondata.playery === 100) {
+                return "Wall hit.";
+            }
+        }
+            if (yroam == 2) {
+                playerpositiondata.playery = playerpositiondata.playery - 0;
+                if (playerpositiondata.playery === -100) {
+                    return "Wall hit.";
+                }
+                if (playerpositiondata.playery === 100) {
+                    return "Wall hit.";
+                }
+            }
+            if (yroam == 3) {
+                playerpositiondata.playery = playerpositiondata.playery - -1;
+                if (playerpositiondata.playery === -100) {
+                    return "Wall hit.";
+                }
+                if (playerpositiondata.playery === 100) {
+                    return "Wall hit.";
+                }
+            }
+            //roam function on the z axis
+            if (zroam == 1) {
+                playerpositiondata.playerz = playerpositiondata.playerz - 1;
+                if (playerpositiondata.playerz === -100) {
+                    return "Wall hit.";
+                }
+                if (playerpositiondata.playerz === 100) {
+                    return "Wall hit.";
+                }
+            }
+                if (zroam == 2) {
+                    playerpositiondata.playerz = playerpositiondata.playerz - 0;
+                    if (playerpositiondata.playerz === -100) {
+                        return "Wall hit.";
+                    }
+                    if (playerpositiondata.playerz === 100) {
+                        return "Wall hit.";
+                    }
+                }
+                if (yroam == 3) {
+                    playerpositiondata.playerz = playerpositiondata.playerz - -1;
+                    if (playerpositiondata.playerz === -100) {
+                        return "Wall hit.";
+                    }
+                    if (playerpositiondata.playerz === 100) {
+                        return "Wall hit.";
+                    }
+                }
+
+        if (itemposition.itemx === playerpositiondata.playerx) {
+            if (itemposition.itemy === playerpositiondata.playery) {
+                if (itemposition.itemz === playerpositiondata.playerz) {
+                    itemkey.helditem = itemposition.itemtype
+                    if (itemkey.helditem === 1) {
+                        console.log("You got:");
+                        console.log(itemkey.itemid1.name);
+                        console.log(itemkey.itemid1.description);
+                    }
+                    else if (itemkey.helditem === 2) {
+                        console.log("You got:");
+                        console.log(itemkey.itemid2.name);
+                        console.log(itemkey.itemid2.description);
+                    }
+                    else if (itemkey.helditem === 3) {
+                        console.log("You got:");
+                        console.log(itemkey.itemid3.name);
+                        console.log(itemkey.itemid3.description);
+                    }
+                }
+            }
+        }
+        console.log("Current pos:", "X:", playerpositiondata.playerx, " Y:", playerpositiondata.playery, " Z:", playerpositiondata.playerz);
+    }
+
+function pointsset(set) {
+    if (DEBUG_MODE) {
+        return game.points = set;
+    }
+    else {
+    return "Nice try.";
+    }
+}
+function pointcalc() {
+    game.points = game.points +
+    (game.basegain +
+            game.steponeadd * game.steptwomult *
+                game.stepthreemult +
+            game.stepfouradd * game.powerpoints) /
+        game.difficulty;
+        if (game.itemduration > 0) {
+            game.itemduration = game.itemduration - 1;
+            game.points = game.points * game.itemmult;
+        }
+}
 function help() {
-console.log("help()................Shows this.");
-console.log("shop()................Shows the available purchasable items.");
-console.log("update()..............Increases points. Equivalent of clicking in a clicker game.");
-console.log("charge()..............Gain mult.")
-console.log("difficultyset(number).Change your difficulty.");
-console.log("github()..............Shows the github repo link.");
-console.log("credits().............Shows the credits.");
-console.log("discord().............Gives a link to the terminus.js discord.");
-if (infunlock == 1) {
-console.log("infshop().Shows infinitley purchasable items.");
+    const list = [
+        "help()................Shows this.",
+        "shop()................Shows the available purchasable items.",
+        "update()..............Increases points. Equivalent of clicking in a clicker game.",
+        "charge()..............Gain power.",
+        "difficultyset(number).Change your difficulty.",
+        "github()..............Shows the github repo link.",
+        "credits().............Shows the credits.",
+        "discord().............Gives a link to the terminus.js discord.",
+        "hints()...............Shows a hint.",
+        "checkAchievements()...Shows your current achievements.",
+    ];
+    if (game.unlocks.infshop) {
+        list.push("infshop().............Shows infinitley purchasable items.");
+    }
+    if (DEBUG_MODE) list.push("pointsset(set)....Sets your points.");
+    return list.join("\n");
 }
+console.log(help());
 
-}
 function difficultyset(number) {
-    difficulty = number;
-    console.log("Set difficulty to ", number);
-    console.log("Can be changed at any time, but you wouldn't do that, would you?")
+    game.difficulty = number;
+    return `Set difficulty to ${number}\n` +
+        "Can be changed at any time, but you wouldn't do that, would you?"; 
 }
 
 function charge() {
-    if (power >= 10) {
-        if (power <= 14) {
-        power = 15;
-        }
-    }
-    else if (power == 15){
-        console.log("Fully charged");
-    }
-    else if (power <= 9) {
-        if (power <= 6) {
-        power = 10;
-        }
-    }
-    else if (power <= 5) {
-        power = 10;
-    }
+    if (game.power == game.maxbattery) return "Full charge.";
+
+    game.power = game.power + game.rechargerate;
+    return "Current battery: " + game.power;
 }
-
-
 
 function update() {
-    if (power == 15) {
-        powerpoints = 1.5
-        console.log("Full power. * 1.5 bonus");
+    if (game.power <= 0) return "No power.";
+    game.powerpoints = game.power / game.antipower;
+    game.power = game.power - 1;
+
+    if (game.points < 0) game.indebted = true; 
+pointcalc()
+    if (game.indebted && game.points >= 0) {
+        game.indebted = 0;
+        console.log("You got out of debt!");
     }
-    else if (power >= 10) {
-        powerpoints = 1
-    }
-    else if (power >= 6) {
-        powerpoints = 0.5
-        console.log("Low Power.");
-    }
-    else if (power == 0) {
-        powerpoints = 0;
-        console.log("No power. Recharge to regain points.")
-    }
-    if (points < 0) {
-        debtflag = 1;
-    }
-    points = points + (basegain + steponeadd * steptwomult * stepthreemult + stepfouradd * powerpoints) / difficulty;
-    if (debtflag == 1) {
-        if (points < 0) {
-            points = 0;
-            debtflag = 0;
-        }
-        else if (debtflag == 1) {
-            debtflag = 0
-            console.log("You got out of debt!");
-        }
-    }
-    console.log("you have ", points, " points");
+
+    checkAchievements();
+
+    return `You have ${game.points} points`;
 }
+
 function shop() {
-    console.log("You have ", points, " points");
-    if (beginbought == 0) {
-    console.log("The beginning......$5....begin();");
-    }
-    if (indexbought == 0) {
-    console.log("index.html.........$20...index();");
-    }
-    if (doctypebought == 0) {
-    console.log("DOCTYPE............$50...doctype();");
-    }
-    if (configymlbought == 0) {
-    console.log("config.yml.........$100..configYML();");
-    }
-    if (infunlock == 0) {
-    console.log("git push 1.........$500..push1();");
-    }
-    if (infunlock == 1) {
-    console.log("git push 2.........$5000..push2();");
-    }
-    console.log("WIP................$0....N/A");
-    }
+    const list = [
+        `You have ${game.points} points`,
+        `begin(): $${game.unlocks.begin ? 0 : 5}.........The beginning`,
+        `index(): $${game.unlocks.index ? 0 : 20}........index.html`,
+        `doctype(): $${game.unlocks.doctype ? 0 : 50}......<!DOCTYPE HTML>`,
+        `configyml(): $${game.unlocks.configyml ? 0 : 100}...config.yml`,
+        `push1(): $${game.unlocks.push1 ? 0 : 500}........git push 1`,
+        `push2(): $${game.unlocks.push2 ? 0 : 5000}.......git push 2`,
+    ];
 
-    let beginbought = 0;
-    function begin() {
-        if (beginbought == 0) {
-            if (points >= 0) {
-                beginbought = 1;
-                basegain = 10;
-                points = points - 5 * difficulty;
-                console.log("Began!");
-            }
-            else {
-                console.log("Cannot afford!");
-            }
-        }
-        else {
-            console.log("You already began.");
-        }
-        console.log("You have ", points, " points");
+    return list.join("\n");
+}
+
+function begin() {
+    if (game.unlocks.begin) return "You already began.";
+    if (game.indebted) return "Cannot afford!";
+
+    game.unlocks.begin = true;
+    game.basegain = 10;
+    game.points -= 5 * game.difficulty;
+    console.log("Began!\n");
+
+    return `You have ${game.points} points`; // Shop just shown this, i think this is unnecessary
+}
+
+function index() {
+    if (game.unlocks.index) return "You already created index.html";
+    if (game.indebted) return "Cannot afford!";
+
+    game.unlocks.index = 1;
+    game.steptwomult += 0.5;
+    game.points -= 20 * game.difficulty;
+    console.log("Created index.html!\n");
+
+    return `You have ${game.points} points`;
+}
+
+function doctype() {
+    if (game.unlocks.doctype) {
+        return "You- YOU ALREADY ADDED <!DOCTYPE HTML> YOU DONT NEED TO PUT IT EVERY TIME YOU ADD <BODY> STOP PLEASE";
     }
-    
+    if (game.indebted) return "Cannot afford!";
 
-    let indexbought = 0;
-    function index() {
-        if (indexbought == 0) {
-            if (points >= 0) {
-                indexbought = 1;
-                steptwomult = steptwomult + 0.5;
-                points = points - 20 * difficulty;
-            }
-            else {
-                console.log("Cannot afford!");
-            }
-            }
-            else {
-            console.log("You already created index.html")
-            }
-            console.log("You have ", points, " points");
-        }
+    game.unlocks.doctype = true;
+    game.stepthreemult += 0.5;
+    game.points -= 50 * game.difficulty;
+    console.log("Added <!DOCTYPE HTML>!");
 
-    
+    return `You have ${game.points} points`;
+}
 
-    let doctypebought = 0;
-    function doctype() {
-        if (doctypebought == 0) {
-            if (points >= 0) {
-                doctypebought = 1;
-                stepthreemult = stepthreemult + 0.5;
-                points = points - 50 * difficulty;
-            }
-            else {
-                console.log("Cannot affordies!");
-            }
-            
-        }
-        else {
-                console.log("You- YOU ALREADY ADDED <!DOCTYPE HTML> YOU DONT NEED TO PUT IT EVERY TIME YOU ADD <BODY> STOP PLEASE");
-            }
-            console.log("You have ", points, " points");
+function configyml() {
+    if (game.unlocks.configyml) return "You already created config.yml";
+    if (game.indebted) return "Cannot afford!";
+
+    game.unlocks.configyml = true;
+    game.stepfourmult *= 2;
+    game.points -= 100 * game.difficulty;
+    console.log("Created config.yml!");
+
+    return `You have ${game.points} points`;
+}
+
+function push1() {
+    if (game.upgstage !== 0) return "how?";
+    if (game.infstage !== 0) {
+        return "dude stop buying stuff you already bought lol";
     }
+    if (game.indebted) return "you are brokies :3";
 
-    let configymlbought = 0;
-    function configyml() {
-        if (configyml == 0) {
-            if (points >= 0) {
-                configymlbought = 1;
-                stepfourmult = stepfourmult * 2;
-                points = points - 100 * difficulty;
-            }
-            else {
-                console.log("no pointies");
-                }
-        }
-        else {
-            console.log("You already bought this.");
-        }
-        console.log("You have ", points, " points");
+    game.unlocks.infshop = true;
+    game.infstage = 1;
+    game.upgstage = 1;
+    game.points -= 500 * game.difficulty;
+    console.log("You've unlocked the infshop. Check help() for details.");
 
+    return `You have ${game.points} points`;
+}
+
+function push2() {
+    if (game.infstage !== 1) {
+        return "You haven't unlocked infinite upgrades yet";
     }
+    if (game.indebted) return "Come back when you're a little bit richer";
+    if (game.upgstage !== 1) return "Buy the previous push first!";
 
-    function push1() {
-        if (upgstage == 0) {
-        if (infunlock == 0) {
-            if (points >= 0) {
-                infunlock = 1;
-                upgstage = 1;
-                points = points - 500 * difficulty;
-                console.log("You've unlocked the infshop. Check help() for details.");
-            }
-            else {
-                console.log("you are brokies :3")
-            }
-        }
-        else {
-            console.log("dude stop buying stuff you already bought lol");
-        }
-        
+    game.upgstage = 2;
+    game.points -= 5000 * game.difficulty;
+    return `You have ${game.points} points`;
+}
+
+function push3() {
+    if (game.infstage <= 2) {
+        return "You haven't unlocked infinite upgrades yet";
     }
-    else {
-        console.log("how?")
-    }
-    console.log("You have ", points, " points");
-    }
+    if (game.indebted) return "Come back when you're a little bit richer";
+    if (game.upgstage <= 2) return "Buy the previous push first!";
 
-    function push2() {
-        if (infunlock == 1) {
-            if (points >= 0) {
-                if (upgstage == 1)  {
-                    upgstage = 2;
-                    points = points - 5000 * difficulty;
-                }
-                else {
-                    console.log("buy the previous push first!");
-                    }
-                    }
-            else {
-                console.log("come back when you're a little bit richer");
-            }
-        }
-        else {
-        console.log("you havent unlocked infinite upgrades yet");
-        }
-        console.log("You have ", points, " points");
-    }
-
-
-
+    game.upgstage = 3;
+    game.points -= 50000 * game.difficulty;
+    return `You have ${game.points} points`;
+}
 
 function infshop() {
-    
-    if (infunlock == 1) {
-    console.log("See code comments for upgrade descriptions")
-    if (upgstage == 1) {
-    console.log("Step one Upgrade.......$5+....stepone();"); //console.log("Increases step 1 addition")
-    console.log("Step two Upgrade.......$25+...steptwo();"); //console.log("Increases step 2 mult")
-    console.log("Step three Upgrade.....$25+...stepthree();"); //console.log("Increases step 3 mult")
-    console.log("Step four Upgrade......$2+....stepfour();"); //console.log("Increases step 4 addition")
+    if (!game.unlocks.infshop) {
+        return "You have not unlocked infinite upgrades.";
     }
-    if (upgstage == 2) {
-        console.log("Step one Upgrade 2....$20+.....stepone2();"); //Increases step 1 addition but better
-        console.log("Step two Upgrade 2....$100+....steptwo2();"); //Increases step 2 mult but better
-        console.log("Step three Upgrade 3..$100+....stepthree2();"); //Increases step 3 mult but better
-        console.log("Step four Upgrade 4...$8+......stepfour2();"); //Increases step 4 addition but better
 
-    }
-    console.log("Base increment Upgrade.$500+...baseup();"); //Increases the base that is then multiplied etc etc
-    console.log("Upgrade bonus..........$100+..upgbonus();"); //Increases how much upgrades upgrade stuff OTHER THAN ITSELF. THIS IS NOT EXPONENTIAL. YET. IDK GIMME AN ISSUE REPORT IF ITS UNFUN OR SMTH.
-    console.log("hello world!...........$0....helloworld();"); //Prints "Hello world!" in console as many times as you have purchased upgbonus();
-    }
-    else {
-        console.log("You have not unlocked infinite upgrades.");
-    }
-    
+    let list = game.infstage === 1
+        ? [ // todo: Export cost calculations
+            `stepone(): $${
+                5 + game.upgpriceboost * game.difficulty
+            }............Increases step 1 addition`,
+            `steptwo(): $${
+                25 + game.upgpriceboost * game.difficulty
+            }...........Increases step 2 multiplier`,
+            `stepthree(): $${
+                25 + game.upgpriceboost * game.difficulty
+            }.........Increases step 3 multiplier`,
+            `stepfour(): $${
+                2 + game.upgpriceboost * game.difficulty
+            }...........Increases step 4 addition`,
+        ]
+        : [
+            `stepone2(): $${
+                20 + game.upgpriceboost * game.difficulty
+            }..........Increases step 1 addition`,
+            `steptwo2(): $${
+                100 + game.upgpriceboost * game.difficulty
+            }.........Increases step 2 multiplier`,
+            `stepthree2(): $${
+                100 + game.upgpriceboost * game.difficulty
+            }.......Increases step 3 multiplier`,
+            `stepfour2(): $${
+                8 + game.upgpriceboost * game.difficulty
+            }..........Increases step 4 addition`,
+            `maxpowerup(): $${
+                800 + game.upgpriceboost * game.difficulty
+            }.......Increases the maximum battery.`,
+        ]
+
+    list = [
+        `Stage ${game.infstage} upgrades`,
+        ...list,
+        `baseup(): $${
+            500 + game.upgpriceboost * game.difficulty
+        }...........Increases the base that is then multiplied etc etc`,
+        `upgbonus(): $${
+            100 + game.upgpriceboost * game.difficulty
+        }..........Increases how much upgrades upgrade stuff OTHER THAN ITSELF.`,
+        `helloworld(): $0...........Prints 'Hello world!' in console.`,
+    ];
+    console.log("See code comments for upgrade descriptions"); // should this be here?
+
+    return list.join("\n");
 }
 
 function stepone() {
-    if (infunlock == 1) {
-    if (upgstage == 1)  {
-    if (points >= 0) {
-        points = points - 5 - upgpriceboost * difficulty;
-    steponeadd = steponeadd + upgbonuslet;
-    console.log("purchased stepone();")
-    upgpriceboost = upgpriceboost + 1;
+    if (!game.unlocks.infshop) {
+        return "You have not unlocked infinite upgrades.";
     }
-    else {
-      console.log("ERROR CODE 85BB65");
-    }
-    }
-    else {
-        console.log("Lol you leveled up too much krill issue.")
+    if (game.upgstage !== 1) return "Lol you leveled up too much krill issue.";
+    if (game.indebted) return "You don't have enough money";
 
-    }
-}
-else {
-    console.log("You have not unlocked infinite upgrades.");
-}
-console.log("You have ", points, " points");
-}
+    game.points -= 5 + game.upgpriceboost * game.difficulty;
+    game.steponeadd += game.upgradebonus;
+    game.upgpriceboost += 1;
+    console.log("purchased stepone();");
 
+    return `You have ${game.points} points`;
+}
 
 function steptwo() {
-    if (infunlock == 1) {
-    if (upgstage == 1) {
-    if (points >= 0) {
-        points = points - 25 - upgpriceboost * difficulty;
-        steptwomult = steptwomult + upgbonuslet;
-        console.log("purchased steptwo();")
-        upgpriceboost = upgpriceboost + 1;
+    if (!game.unlocks.infshop) {
+        return "You have not unlocked infinite upgrades.";
     }
-    else {
-        console.log("ERROR CODE 85BB65");
+    if (game.upgstage !== 1) return "Lol you leveled up too much krill issue.";
+    if (game.indebted) return "You don't have enough money";
 
-    }
-    }
-    else {
-        console.log("Lol you leveled up too much krill issue.")
+    game.points -= 25 + game.upgpriceboost * game.difficulty;
+    game.steptwomult += game.upgradebonus;
+    game.upgpriceboost += 1;
+    console.log("purchased steptwo();");
 
-    }
-}
- else {
-     console.log("You have not unlocked infinite upgrades.");
-     }
-     console.log("You have ", points, " points");
+    return `You have ${game.points} points`;
 }
 
 function stepthree() {
-    if (infunlock == 1) {
-    if (upgstage == 1) {
-    if (points >= 0) {
-        points = points - 25 - upgpriceboost * difficulty;
-        stepthreemult = stepthreemult + upgbonuslet;
-        console.log("purchased stepthree();")
-        upgpriceboost = upgpriceboost + 1;
+    if (!game.unlocks.infshop) {
+        return "You have not unlocked infinite upgrades.";
     }
-    else {
-        console.log("ERROR CODE 85BB65");
-    }
-    }
-    else {
-        console.log("Lol you leveled up too much krill issue.")
-    }
-}
-else {
-     console.log("You have not unlocked infinite upgrades.");
-}
-console.log("You have ", points, " points");
+    if (game.upgstage !== 1) return "Lol you leveled up too much krill issue.";
+    if (game.indebted) return "You don't have enough money";
+
+    game.points -= 25 + game.upgpriceboost * game.difficulty;
+    game.stepthreemult += game.upgradebonus;
+    game.upgpriceboost += 1;
+    console.log("purchased stepthree();");
+
+    return `You have ${game.points} points`;
 }
 
 function stepfour() {
-    if (infunlock == 1) {
-    if (upgstage == 1) {
-    if (points >= 0) {
-        points = points - 2 - upgpriceboost * difficulty;
-        stepfouraddition = stepfouraddition + upgbonuslet;
-        console.log("purchased stepfour();");
-        upgpriceboost = upgpriceboost + 1;
+    if (!game.unlocks.infshop) {
+        return "You have not unlocked infinite upgrades.";
     }
-    
-    else {
-        console.log("ERROR CODE 85BB65");
+    if (game.upgstage !== 1) {
+        return "Lol you leveled up too much krill issue.";
     }
+    if (game.indebted) {
+        return "You don't have enough money";
     }
-    else {
-         console.log("Lol you leveled up too much krill issue.")
 
-    }
-    }
-    else {
-         console.log("You have not unlocked infinite upgrades.");
-    }
+    game.points -= 2 + game.upgpriceboost * game.difficulty;
+    game.stepfouradd += game.upgradebonus;
+    game.upgpriceboost += 1;
+
+    console.log("purchased stepfour();");
+    return `You have ${game.points} points`;
 }
 
 function baseup() {
-    if (infunlock == 1) {
-    if (points >= 0) {
-        points = points - 500 - upgpriceboost * difficulty;
-        basegain = basegain + upgbonuslet;
-        console.log("purchased baseup();");
-        upgpriceboost = upgpriceboost + 1;
+    if (!game.unlocks.infshop) {
+        return "You have not unlocked infinite upgrades.";
     }
-    else {
-        console.log("ERROR CODE 85BB65");
+    if (game.indebted) {
+        return "You don't have enough money";
+    }
 
-    }
-}
-else {
- console.log("You have not unlocked infinite upgrades.");
- }
- console.log("You have ", points, " points");
+    game.points -= 500 + game.upgpriceboost * game.difficulty;
+    game.basegain += game.upgradebonus;
+    game.upgpriceboost += 1;
+
+    console.log("purchased baseup();");
+    return `You have ${game.points} points`;
 }
 
 function upgbonus() {
-    if (infunlock == 1) {
-    if (points >= 0) {
-        points = points - 100 - upgpriceboost * difficulty;
-        upgbonuslet = upgbonuslet + 0.1;
-        console.log("purchased upgbonus();");
-        upgpriceboost = upgpriceboost + 1;
+    if (!game.unlocks.infshop) {
+        return "You have not unlocked infinite upgrades.";
     }
-    else {
-        console.log("ERROR CODE 85BB65");
+    if (game.indebted) {
+        return "You don't have enough money";
     }
 
-}
-else {
-     console.log("You have not unlocked infinite upgrades.");
-}
-console.log("You have ", points, " points");
+    game.points -= 100 + game.upgpriceboost * game.difficulty;
+    game.upgradebonus += 0.1;
+    game.upgpriceboost += 1;
+
+    console.log("purchased upgradebonus();");
+    return `You have ${game.points} points`;
 }
 
 function helloworld() {
-    console.log("hello world");
-    let helloworld = prompt("Hello World?")
-    if (helloworld=="Hello World") {
-       prompt("Yay!");
-    }
-    else {
-        prompt("Monster.");
-    }
-    console.log("You have ", points, " points");
+    console.log("Hello world!");
 }
 
-
 function stepone2() {
-    if (infunlock == 1) {
-    if (upgstage == 2)  {
-    if (points >= 0) {
-        points = points - 20 - upgpriceboost * difficulty;
-    steponeadd = steponeadd + upgbonuslet;
-    console.log("purchased stepone();")
-    upgpriceboost = upgpriceboost + 1;
+    if (!game.unlocks.infshop) {
+        return "You have not unlocked infinite upgrades.";
     }
-    else {
-      console.log("ERROR CODE 85BB65");
+    if (game.upgstage < 2) {
+        return "You are too low level.";
     }
+    if (game.upgstage > 2) {
+        return "Lol you leveled up too much krill issue.";
     }
-    else {
-        console.log("Lol you leveled up too much krill issue.")
-
-    }
-    }
-    else {
-      console.log("You have not unlocked infinite upgrades.");
-    }
-    console.log("You have ", points, " points");
+    if (game.indebted) {
+        return "You don't have enough money";
     }
 
+    game.points -= 20 + game.upgpriceboost * game.difficulty;
+    game.steponeadd += game.upgradebonus;
+    game.upgpriceboost += 1;
 
-
+    console.log("purchased stepone();");
+    return `You have ${game.points} points`;
+}
 
 function steptwo2() {
-    if (infunlock == 1) {
-    if (upgstage == 2) {
-    if (points >= 0) {
-        points = points - 100 - upgpriceboost * difficulty;
-        steptwomult = steptwomult + upgbonuslet;
-        console.log("purchased steptwo();")
-        upgpriceboost = upgpriceboost + 1;
+    if (!game.unlocks.infshop) {
+        return "You have not unlocked infinite upgrades.";
     }
-    else {
-        console.log("ERROR CODE 85BB65");
+    if (game.upgstage < 2) {
+        return "You are too low level.";
+    }
+    if (game.upgstage > 2) {
+        return "Lol you leveled up too much krill issue.";
+    }
+    if (game.indebted) {
+        return "You don't have enough money";
+    }
 
-    }
-    }
-    else {
-        console.log("Lol you leveled up too much krill issue.")
+    game.points -= 100 + game.upgpriceboost * game.difficulty;
+    game.steptwomult += game.upgradebonus;
+    game.upgpriceboost += 1;
 
-    }
-    }
-    else {
-        console.log("You have not unlocked infinite upgrades.");
-    }
-    console.log("You have ", points, " points");
+    console.log("purchased steptwo();");
+    return `You have ${game.points} points`;
 }
 
 function stepthree2() {
-    if (infunlock == 1) {
-    if (upgstage == 2) {
-    if (points >= 0) {
-        points = points - 100 - upgpriceboost * difficulty;
-        stepthreemult = stepthreemult + upgbonuslet;
-        console.log("purchased stepthree();")
-        upgpriceboost = upgpriceboost + 1;
+    if (!game.unlocks.infshop) {
+        return "You have not unlocked infinite upgrades.";
     }
-    else {
-        console.log("ERROR CODE 85BB65");
+    if (game.upgstage < 2) {
+        return "You are too low level.";
     }
+    if (game.upgstage > 2) {
+        return "Lol you leveled up too much krill issue.";
     }
-    else {
-        console.log("Lol you leveled up too much krill issue.")
+    if (game.indebted) {
+        return "You don't have enough money";
     }
-    }
-    else {
-        console.log("You have not unlocked infinite upgrades.");
-    }
-    console.log("You have ", points, " points");
+
+    game.points -= 100 + game.upgpriceboost * game.difficulty;
+    game.stepthreemult += game.upgradebonus;
+    game.upgpriceboost += 1;
+
+    console.log("purchased stepthree();");
+    return `You have ${game.points} points`;
 }
 
 function stepfour2() {
-    if (infunlock == 1) {
-    if (upgstage == 2) {
-    if (points >= 0) {
-        points = points - 8 - upgpriceboost * difficulty;
-        stepfouraddition = stepfouraddition + upgbonuslet;
-        console.log("purchased stepfour();");
-        upgpriceboost = upgpriceboost + 1;
+    if (!game.unlocks.infshop) {
+        return "You have not unlocked infinite upgrades.";
     }
-    
-    else {
-        console.log("ERROR CODE 85BB65");
+    if (game.upgstage < 2) {
+        return "You are too low level.";
     }
+    if (game.upgstage > 2) {
+        return "Lol you leveled up too much krill issue.";
     }
-    else {
-         console.log("Lol you leveled up too much krill issue.")
+    if (game.indebted) {
+        return "You don't have enough money";
+    }
 
+    game.points -= 8 + game.upgpriceboost * game.difficulty;
+    game.stepfouradd += game.upgradebonus;
+    game.upgpriceboost += 1;
+
+    console.log("purchased stepfour();");
+    return `You have ${game.points} points`;
+}
+
+function maxpowerup() {
+    if (!game.unlocks.infshop) {
+        return "You have not unlocked infinite upgrades.";
     }
+    if (game.upgstage < 2) {
+        return "You have not leveled up enough";
     }
-    else {
-        console.log("You have not unlocked infinite upgrades.");
+    if (game.indebted) {
+        return "You don't have enough money";
     }
-    console.log("You have ", points, " points");
+
+    game.points -= 800 + game.upgpriceboost * game.difficulty;
+    game.stepfouradd += game.upgradebonus;
+    game.maxbattery += 1;
+
+    console.log("purchased maxpowerup();");
+    return `You have ${game.points} points`;
+}
+
+// STUPID FUCKING IDEA
+const achievements = [
+    {
+        id: 1,
+        name: "Well, it's a start.",
+        description: "Earn your first point.",
+        criteria: () => game.points >= 1,
+        achieved: false,
+    },
+    {
+        id: 2,
+        name: "Broke ass",
+        description: "Collect 100 points.",
+        criteria: () => game.points >= 100,
+        achieved: false,
+    },
+    {
+        id: 3,
+        name: "Full battery",
+        description: "Reach full power.",
+        criteria: () => game.power == 15,
+        achieved: false,
+    },
+    {
+        id: 4,
+        name: "Overcharged",
+        description: "Get a power value over the default maximum.",
+        criteria: () => game.power > 15,
+        achieved: false,
+    },
+];
+
+function checkAchievements() {
+    achievements.forEach((achievement) => {
+        if (!achievement.achieved && achievement.criteria()) {
+            achievement.achieved = true;
+            console.log(
+                `You got: ${achievement.name} - ${achievement.description}`,
+            );
+        }
+    });
 }
