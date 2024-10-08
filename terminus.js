@@ -1,6 +1,14 @@
+
+//V18 
+//Coordinates
+//Item system
+
+console.log("Welcome to Terminus.JS");
+
 console.log(hints());
 function hints(force = 0) {
     const list = [
+        "You can generate points by calling update().",
         "Power mult = power / 10",
         "help() can update its contents based on the things you have purchased.",
         "You can change your difficulty by calling difficultyset(number)",
