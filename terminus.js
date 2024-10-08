@@ -18,7 +18,7 @@ function hints(force = 0) {
 }
 
 function github() {
-    console.log("https://github.com/rando-idiot/Terminus.JS");
+    return "https://github.com/rando-idiot/Terminus.JS";
 }
 
 function credits() {
@@ -75,9 +75,8 @@ function pointsset(set) {
     } else {
         console.log("Nice try.");
     }
+    return "Nice try.";
 }
-
-help();
 
 function help() {
     const list = [
@@ -98,6 +97,7 @@ function help() {
     if (DEBUG_MODE) list.push("pointsset(set)....Sets your points.");
     list.forEach(console.log);
 }
+console.log(help());
 
 function difficultyset(number) {
     game.difficulty = number;
@@ -231,6 +231,7 @@ function push2() {
     if (game.upgstage !== 1) {
         return console.log("Buy the previous push first!");
     }
+    if (game.indebted) return "you are brokies :3";
 
     game.upgstage = 2;
     game.points -= 5000 * game.difficulty;
