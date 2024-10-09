@@ -4,7 +4,7 @@
 
 console.log("Welcome to Terminus.JS");
 
-console.log(hints());
+hints()
 function hints(force = 0) {
     const list = [
         "You can generate points by calling update().",
@@ -13,7 +13,7 @@ function hints(force = 0) {
         "You can change your difficulty by calling difficultyset(number)",
         "You can get more hints by calling hints().",
     ];
-    console.log(list[Math.round(Math.random() * list.length)]);
+    console.log(list[Math.floor(Math.random() * list.length)]);
 }
 
 function github() {
