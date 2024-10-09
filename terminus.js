@@ -4,7 +4,7 @@
 
 console.log("Welcome to Terminus.JS");
 
-hints()
+hints();
 function hints(force = 0) {
     const list = [
         "You can generate points by calling update().",
@@ -65,12 +65,26 @@ let game = events({
     rechargerate: 1,
     antipower: 10,
     itemduration: 0,
+    pointcalc: () => {
+        game.points = game.points +
+            (game.basegain +
+                    game.steponeadd * game.steptwomult *
+                        game.stepthreemult +
+                    game.stepfouradd * game.powerpoints) /
+                game.difficulty;
+        if (game.itemduration > 0) {
+            game.itemduration = game.itemduration - 1;
+            game.points = game.points * game.itemmult;
+        }
+    },
 });
 
 game.points$onChange((points) => {
     console.log(`You have ${points} points.`);
     if (points < 0) {
         game.indebted = true;
+    } else if (game.indebted) {
+        game.indebted = false;
     }
 });
 game.indebted$on(true, () => {
@@ -123,7 +137,7 @@ function useheld() {
         game.power = game.maxbattery;
     } else if (itemkey.helditem === 2) {
         console.log("Used ", itemkey.itemid2.name);
-        pointcalc();
+        game.pointcalc();
     } else if (itemkey.helditem === 3) {
         console.log("Used ", itemkey.itemid3.name);
         game.itemduration = 3;
@@ -259,18 +273,7 @@ function pointsset(set) {
         console.log("Nice try.");
     }
 }
-function pointcalc() {
-    game.points = game.points +
-        (game.basegain +
-                game.steponeadd * game.steptwomult *
-                    game.stepthreemult +
-                game.stepfouradd * game.powerpoints) /
-            game.difficulty;
-    if (game.itemduration > 0) {
-        game.itemduration = game.itemduration - 1;
-        game.points = game.points * game.itemmult;
-    }
-}
+
 function help() {
     const list = [
         "help()................Shows this.",
@@ -300,20 +303,24 @@ function difficultyset(number) {
     ); // why is this there?
 }
 
-function charge() {
+game.power$onChange((power) => {
     if (game.power == game.maxbattery) {
         return console.log("Full charge.");
     }
-    game.power = game.power + game.rechargerate;
     console.log("Current battery: ", game.power);
+});
+function charge() {
+    if (game.power < game.maxbattery) {
+        game.power = game.power + game.rechargerate;
+    }
 }
 
 function update() {
     if (game.power <= 0) return console.log("No power.");
     game.powerpoints = game.power / game.antipower;
-    game.power = game.power - 1;
+    game.power -= 1;
 
-    pointcalc();
+    game.pointcalc();
 
     checkAchievements();
 }
@@ -324,8 +331,13 @@ function shop() {
         "index(): $20........index.html",
         "doctype(): $50......<!DOCTYPE HTML>",
         "configyml(): $100...config.yml",
-        "push1(): $500........git push 1",
-        "push2(): $5000.......git push 2",
+        game.upgstage === 0
+            ? "push(): $500........git push 1"
+            : game.upgstage === 1
+            ? "push(): $5000.......git push 2"
+            : game.upgstage === 2
+            ? "push(): $50000......git push 3"
+            : "push(): $???........git push ?",
     ].forEach((str) => console.log(str));
 }
 
@@ -337,7 +349,7 @@ game.unlocks.begin$on(true, () => {
 function begin() {
     if (game.indebted) return console.log("Cannot afford!");
     game.unlocks.begin = true;
-    globalTis.begin = () => console.log("You already began.");
+    globalThis.begin = () => console.log("You already began.");
 }
 
 game.unlocks.index$on(true, () => {
@@ -348,7 +360,7 @@ game.unlocks.index$on(true, () => {
 function index() {
     if (game.indebted) return console.log("Cannot afford!");
     game.unlocks.index = true;
-    globalThis.index = console.log("You already created index.html");
+    globalThis.index = () => console.log("You already created index.html");
 }
 
 game.unlocks.doctype$on(true, () => {
@@ -359,9 +371,10 @@ game.unlocks.doctype$on(true, () => {
 function doctype() {
     if (game.indebted) return console.log("Cannot afford!");
     game.unlocks.doctype = true;
-    globalThis.doctype = console.log(
-        "You- YOU ALREADY ADDED <!DOCTYPE HTML> YOU DONT NEED TO PUT IT EVERY TIME YOU ADD <BODY> STOP PLEASE",
-    );
+    globalThis.doctype = () =>
+        console.log(
+            "You- YOU ALREADY ADDED <!DOCTYPE HTML> YOU DONT NEED TO PUT IT EVERY TIME YOU ADD <BODY> STOP PLEASE",
+        );
 }
 
 game.unlocks.configyml$on(true, () => {
@@ -375,12 +388,10 @@ function configyml() {
     globalThis.configyml = () => console.log("You already created config.yml");
 }
 
-
 game.upgstage$on(1, () => {
-    game.points -= 500 * game.difficulty;
     globalThis.push = () => {
         if (game.indebted) return "Come back when you're a little bit richer";
-        
+
         game.upgstage = 2;
         game.points -= 5000 * game.difficulty;
     };
@@ -388,7 +399,7 @@ game.upgstage$on(1, () => {
 game.upgstage$on(2, () => {
     globalThis.push = function () {
         if (game.indebted) return "Come back when you're a little bit richer";
-        
+
         game.upgstage = 3;
         game.points -= 50000 * game.difficulty;
         return `You have ${game.points} points`;
@@ -406,7 +417,6 @@ function push() {
     game.unlocks.infshop = true;
     game.upgstage = 1;
     game.points -= 500 * game.difficulty;
-    console.log("You've unlocked the infshop. Check help() for details.");
 }
 
 game.unlocks.infshop$on(true, () => {
@@ -428,16 +438,16 @@ game.unlocks.infshop$on(true, () => {
                 }...........Increases step 4 addition`,
             ]
             : [
-                `stepone2(): $${
+                `stepone(): $${
                     20 + game.upgpriceboost * game.difficulty
                 }..........Increases step 1 addition`,
-                `steptwo2(): $${
+                `steptwo(): $${
                     100 + game.upgpriceboost * game.difficulty
                 }.........Increases step 2 multiplier`,
-                `stepthree2(): $${
+                `stepthree(): $${
                     100 + game.upgpriceboost * game.difficulty
                 }.......Increases step 3 multiplier`,
-                `stepfour2(): $${
+                `stepfour(): $${
                     8 + game.upgpriceboost * game.difficulty
                 }..........Increases step 4 addition`,
                 `maxpowerup(): $${
@@ -459,7 +469,7 @@ game.unlocks.infshop$on(true, () => {
 
         console.log("See code comments for upgrade descriptions"); // should this be here?
 
-        return list.join("\n");
+        console.log(list.join("\n"));
     };
 });
 
@@ -633,32 +643,36 @@ function helloworld() {
 // STUPID FUCKING IDEA // NO IT'S NOT!
 const achievements = [
     {
-        id: 1,
         name: "Well, it's a start.",
         description: "Earn your first point.",
-        criteria: () => game.points >= 1,
-        achieved: false,
+        criteria: game.points$on(
+            (p) => p >= 1,
+            () => console.log("New Achievement: Well, it's a start."),
+        ),
     },
     {
-        id: 2,
         name: "Broke ass",
         description: "Collect 100 points.",
-        criteria: () => game.points >= 100,
-        achieved: false,
+        criteria: game.points$on(
+            (p) => p >= 100,
+            () => console.log("New Achievement: Broke ass"),
+        ),
     },
     {
-        id: 3,
         name: "Full battery",
         description: "Reach full power.",
-        criteria: () => game.power == 15,
-        achieved: false,
+        criteria: game.power$on(
+            (p) => p == game.maxbattery,
+            () => console.log("New Achievement: Full battery"),
+        ),
     },
     {
-        id: 4,
         name: "Overcharged",
         description: "Get a power value over the default maximum.",
-        criteria: () => game.power > 15,
-        achieved: false,
+        criteria: game.power$on(
+            (p) => p > 15,
+            () => console.log("New Achievement: Overcharged"),
+        ),
     },
 ];
 
