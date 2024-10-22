@@ -1,4 +1,19 @@
-const events = function (obj) {
+/**
+ * @template V, R
+ * @typedef {(k: V) => R} Fn
+ */
+
+// eldrich horror for a type :^
+/**
+ * @template T
+ * @param {T} obj
+ * @returns {T extends Object ? T & {
+ *  [K in keyof T as `${K & string}$on`]: (condition: Fn<T[K], boolean>, func: Fn<T[K], void>, options?: { once?: boolean }) => Fn<T[K], void>
+ * } & {
+ *  [K in keyof T as `${K & string}$onChange`]: Fn<Fn<T[K], void>, void>
+ * } : { [K in keyof T as `${K & string}$on`]: T[K] }}
+ */
+function events(obj) {
     let result = {};
     const arr_len = Array.isArray(obj) ? obj.length : false;
 
@@ -21,7 +36,7 @@ const events = function (obj) {
     }
 
     for (let [k, v] of Object.entries(obj)) {
-        const events = [];
+        let events = [];
         Object.defineProperties(result, {
             [k]: {
                 configurable: false,
@@ -50,7 +65,7 @@ const events = function (obj) {
                 configurable: false,
                 enumerable: false,
                 value: function (func) {
-                    events.push([() => true, func]);
+                    events.push([() => true, func, { once: false }]);
                 },
             },
         });
@@ -62,4 +77,4 @@ const events = function (obj) {
     }
 
     return result;
-};
+}

@@ -80,8 +80,8 @@ let game = events({
 });
 
 game.points$onChange((points) => {
-    console.log(`You have ${points} points.`);
-    if (points < 0) {
+    console.log(`You have ${points.toFixed(2)} points.`);
+    if (!game.indebted && points < 0) {
         game.indebted = true;
     } else if (game.indebted) {
         game.indebted = false;
@@ -285,8 +285,9 @@ function help() {
         "credits().............Shows the credits.",
         "discord().............Gives a link to the terminus.js discord.",
         "hints()...............Shows a hint.",
-        "checkAchievements()...Shows your current achievements.",
+        "achievements()........Shows achievements.",
     ];
+    44;
     if (game.unlocks.infshop) {
         list.push("infshop().............Shows infinitley purchasable items.");
     }
@@ -321,8 +322,6 @@ function update() {
     game.power -= 1;
 
     game.pointcalc();
-
-    checkAchievements();
 }
 
 function shop() {
@@ -638,51 +637,4 @@ function maxpowerup() {
 
 function helloworld() {
     console.log("Hello world!");
-}
-
-// STUPID FUCKING IDEA // NO IT'S NOT!
-const achievements = [
-    {
-        name: "Well, it's a start.",
-        description: "Earn your first point.",
-        criteria: game.points$on(
-            (p) => p >= 1,
-            () => console.log("New Achievement: Well, it's a start."),
-        ),
-    },
-    {
-        name: "Broke ass",
-        description: "Collect 100 points.",
-        criteria: game.points$on(
-            (p) => p >= 100,
-            () => console.log("New Achievement: Broke ass"),
-        ),
-    },
-    {
-        name: "Full battery",
-        description: "Reach full power.",
-        criteria: game.power$on(
-            (p) => p == game.maxbattery,
-            () => console.log("New Achievement: Full battery"),
-        ),
-    },
-    {
-        name: "Overcharged",
-        description: "Get a power value over the default maximum.",
-        criteria: game.power$on(
-            (p) => p > 15,
-            () => console.log("New Achievement: Overcharged"),
-        ),
-    },
-];
-
-function checkAchievements() {
-    achievements.forEach((achievement) => {
-        if (!achievement.achieved && achievement.criteria()) {
-            achievement.achieved = true;
-            console.log(
-                `You got: ${achievement.name} - ${achievement.description}`,
-            );
-        }
-    });
 }
