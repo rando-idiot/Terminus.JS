@@ -165,10 +165,11 @@ function roam() {
         console.log("woag you found item") //omg you foundies itemer
     }
     if (encounteredenemy === 1) {
+        game.incombat = true;
         baz = game.points / randomnumbah(1, 4)
         console.log("You have encountered an enemy!");
         console.log("The enemy points are: ", baz )
-        console.log("You can either use 'fight()' or 'flee()' to determine how you want to act.")
+        console.log("You can either use 'fight()' or 'run()' to determine how you want to act.")
         
     }
 }
@@ -225,7 +226,7 @@ function help() {
         "hints()...............Shows a hint.",
         "achievements()........Shows achievements.",
     ];
-    44;
+    44; //huh? -Rando
     if (game.unlocks.infshop) {
         list.push("infshop().............Shows infinitley purchasable items.");
     }
@@ -310,7 +311,7 @@ function doctype() {
     game.unlocks.doctype = true;
     globalThis.doctype = () =>
         console.log(
-            "You- YOU ALREADY ADDED <!DOCTYPE HTML> YOU DONT NEED TO PUT IT EVERY TIME YOU ADD <BODY> STOP PLEASE",
+            "You- YOU ALREADY ADDED <!DOCTYPE HTML> YOU DONT NEED TO PUT IT EVERY TIME YOU ADD <BODY> STOP PLEASE", //I am terrible at comedy -Rando
         );
 }
 
