@@ -36,7 +36,29 @@ function discord() {
 }
 
 const DEBUG_MODE = false;
+if (DEBUG_MODE) {
+    const debug = [
+        //The reason to make this a constant is so i can just organize all of this into one thing. Please do not change.
+        function setpoints(setted) {
+            game.points = setted;
+        },
+        function chooseunlock(trueorfalse) { 
+            if (trueorfalse === true && false) {
+            game.unlocks.begin = trueorfalse
+            game.unlocks.index = trueorfalse
+            game.unlocks.doctype = trueorfalse
+            game.unlocks.configyml = trueorfalse
+            game.unlocks.infshop = trueorfalse 
+            }
+            else {
+                console.log("trueorfalse must be either truthy or falsy");
+            }
+        },
+        function gerald() {
 
+        }
+    ]
+}
 //The object for determining how many points you make from any given update.
 let game = events({
     unlocks: events({
@@ -46,6 +68,14 @@ let game = events({
         configyml: false,
         infshop: false,
     }),
+    enemies: events({
+        gamblefactor: 1.5,
+        enabled: true,
+        difficulty: 0.5,
+        encounterchance: 10,
+    }),
+    incombat: false,
+    pointcalcstatus: false,
     infstage: 0,
     points: 0,
     steponeadd: 0,
@@ -66,7 +96,9 @@ let game = events({
     antipower: 10,
     itemduration: 0,
     pointcalc: () => {
-        game.points = game.points +
+        if (game.pointcalcstatus === true) {
+            game.pointcalcstatus = false
+        let foo = game.points +
             (game.basegain +
                     game.steponeadd * game.steptwomult *
                         game.stepthreemult +
@@ -75,7 +107,9 @@ let game = events({
         if (game.itemduration > 0) {
             game.itemduration = game.itemduration - 1;
             game.points = game.points * game.itemmult;
+            return foo
         }
+    }
     },
 });
 
@@ -90,17 +124,56 @@ game.points$onChange((points) => {
 game.indebted$on(true, () => {
     console.log("You are in debt.");
 });
-game.indebted$on(false, () => {
+game.indebted$on    (false, () => {
     console.log("You got out of debt.");
 });
-
-//Used for determining the position of the player. Called in the case of item collecting.
-let playerpositiondata = {
-    playerx: 0,
-    playery: 0,
-    playerz: 0,
-};
+let dangerlevel = randomnumbah(game.enemies.difficulty, game.enemies.difficulty * 10)
+function run() {
+    if (game.enemies.incombat === false) {
+        console.log("You arent in combat?????")
+    }
+    else {
+        let lostmoney = game.points / 10
+        game.enemies.incombat = false
+        game.points = game.points - (lostmoney)
+        console.log("You fled. Cost ", lostmoney)
+    }
+}
+function fight() {
+    if (game.incombat === false) {
+        console.log("You are not in combat.")
+    }
+    else {
+        let bar = randomnumbah(1, foo)
+        let foo = (1 / game.enemies.difficulty) * dangerlevel;
+        if (bar === foo) {
+            game.points = (baz * 1.5 - baz);
+            console.log("You won!")
+        }
+        else {
+            console.log("You lost.")
+            game.points = (game.enemies.difficulty * game.points)
+        }
+    }
+}
+let baz
+function roam() {
+    let encounteredenemy = randomnumbah(1, game.enemies.encounterchance)
+    let founditem = randomnumbah(1, itemkey.totalitems)
+    if (founditem === itemkey.totalitems) {
+        itemkey.helditem = founditem
+        console.log("woag you found item") //omg you foundies itemer
+    }
+    if (encounteredenemy === 1) {
+        baz = game.points / randomnumbah(1, 4)
+        console.log("You have encountered an enemy!");
+        console.log("The enemy points are: ", baz )
+        console.log("You can either use 'fight()' or 'flee()' to determine how you want to act.")
+        
+    }
+}
 let itemkey = {
+    encounterchance: 10,
     helditem: 0,
     totalitems: 3,
     itemid0: {
@@ -120,12 +193,6 @@ let itemkey = {
         description: "Gain *2 points per update() for 3 updates()",
     },
 };
-let itemposition = {
-    itemx: randomnumbah(-100, 100),
-    itemy: randomnumbah(-100, 100),
-    itemz: randomnumbah(-100, 100),
-    itemtype: randomnumbah(1, itemkey.totalitems),
-};
 function randomnumbah(min, max) {
     return Math.floor(Math.random() * (max - min + 1) + min);
 }
@@ -137,143 +204,14 @@ function useheld() {
         game.power = game.maxbattery;
     } else if (itemkey.helditem === 2) {
         console.log("Used ", itemkey.itemid2.name);
-        game.pointcalc();
+        game.pointcalcstatus = true
+        game.points = game.pointcalc();
     } else if (itemkey.helditem === 3) {
         console.log("Used ", itemkey.itemid3.name);
         game.itemduration = 3;
         game.itemmult = 2;
     }
 }
-function roam() { //I realize now this is probably the longest function in the program. lol. (also this is probably excruciatingly hard to read and inefficient so im sorry if you're reading this (yes ))
-    xroam = randomnumbah(1, 3);
-    yroam = randomnumbah(1, 3);
-    zroam = randomnumbah(1, 3);
-
-    //roam function on the x axis.
-    if (xroam == 1) {
-        playerpositiondata.playerx = playerpositiondata.playerx - 1;
-        if (playerpositiondata.playerx === -100) {
-            return "Wall hit.";
-        }
-        if (playerpositiondata.playerx === 100) {
-            return "Wall hit.";
-        }
-    }
-    if (xroam == 2) {
-        playerpositiondata.playerx = playerpositiondata.playerx - 0;
-        if (playerpositiondata.playerx === -100) {
-            return "Wall hit.";
-        }
-        if (playerpositiondata.playerx === 100) {
-            return "Wall hit.";
-        }
-    }
-    if (xroam == 3) {
-        playerpositiondata.playerx = playerpositiondata.playerx + 1;
-        if (playerpositiondata.playerx === -100) {
-            return "Wall hit.";
-        }
-        if (playerpositiondata.playerx === 100) {
-            return "Wall hit.";
-        }
-    }
-
-    //roam function on the y axis
-    if (yroam == 1) {
-        playerpositiondata.playery = playerpositiondata.playery - 1;
-        if (playerpositiondata.playery === -100) {
-            return "Wall hit.";
-        }
-        if (playerpositiondata.playery === 100) {
-            return "Wall hit.";
-        }
-    }
-    if (yroam == 2) {
-        playerpositiondata.playery = playerpositiondata.playery - 0;
-        if (playerpositiondata.playery === -100) {
-            return "Wall hit.";
-        }
-        if (playerpositiondata.playery === 100) {
-            return "Wall hit.";
-        }
-    }
-    if (yroam == 3) {
-        playerpositiondata.playery = playerpositiondata.playery - -1;
-        if (playerpositiondata.playery === -100) {
-            return "Wall hit.";
-        }
-        if (playerpositiondata.playery === 100) {
-            return "Wall hit.";
-        }
-    }
-    //roam function on the z axis
-    if (zroam == 1) {
-        playerpositiondata.playerz = playerpositiondata.playerz - 1;
-        if (playerpositiondata.playerz === -100) {
-            return "Wall hit.";
-        }
-        if (playerpositiondata.playerz === 100) {
-            return "Wall hit.";
-        }
-    }
-    if (zroam == 2) {
-        playerpositiondata.playerz = playerpositiondata.playerz - 0;
-        if (playerpositiondata.playerz === -100) {
-            return "Wall hit.";
-        }
-        if (playerpositiondata.playerz === 100) {
-            return "Wall hit.";
-        }
-    }
-    if (yroam == 3) {
-        playerpositiondata.playerz = playerpositiondata.playerz - -1;
-        if (playerpositiondata.playerz === -100) {
-            return "Wall hit.";
-        }
-        if (playerpositiondata.playerz === 100) {
-            return "Wall hit.";
-        }
-    }
-
-    if (itemposition.itemx === playerpositiondata.playerx) {
-        if (itemposition.itemy === playerpositiondata.playery) {
-            if (itemposition.itemz === playerpositiondata.playerz) {
-                itemkey.helditem = itemposition.itemtype;
-                if (itemkey.helditem === 1) {
-                    console.log("You got:");
-                    console.log(itemkey.itemid1.name);
-                    console.log(itemkey.itemid1.description);
-                } else if (itemkey.helditem === 2) {
-                    console.log("You got:");
-                    console.log(itemkey.itemid2.name);
-                    console.log(itemkey.itemid2.description);
-                } else if (itemkey.helditem === 3) {
-                    console.log("You got:");
-                    console.log(itemkey.itemid3.name);
-                    console.log(itemkey.itemid3.description);
-                }
-            }
-        }
-    }
-    console.log(
-        "Current pos:",
-        "X:",
-        playerpositiondata.playerx,
-        " Y:",
-        playerpositiondata.playery,
-        " Z:",
-        playerpositiondata.playerz,
-    );
-}
-
-function pointsset(set) {
-    if (DEBUG_MODE) {
-        game.points = set;
-    } else {
-        console.log("Nice try.");
-    }
-}
-
 function help() {
     const list = [
         "help()................Shows this.",
@@ -319,8 +257,8 @@ function update() {
     if (game.power <= 0) return console.log("No power.");
     game.powerpoints = game.power / game.antipower;
     game.power -= 1;
-
-    game.pointcalc();
+    game.pointcalcstatus = true;
+    game.points = game.pointcalc();
 
     checkAchievements();
 }
