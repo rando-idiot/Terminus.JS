@@ -130,3 +130,20 @@ const overcharged = new Achievement({
     criteria: (p) => p > 15, // default maximum
     action: () => {},
 });
+const fighter = new Achievement({
+    name: "The Fighter",
+    description: "Engage in combat",
+    eventObject: game,
+    eventValue: "totalencounters",
+    criteria: p => p >= 1,
+    action: () => {},
+});
+
+const fighter2 = new Achievement({
+    name: "Combat enjoyer",
+    description: "Engage in combat, but, a lot more.",
+    eventObject: game,
+    eventValue: "totalencounters",
+    criteria: p => p >= 10,
+    action: () => {},
+});

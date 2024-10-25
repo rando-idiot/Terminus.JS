@@ -1,6 +1,5 @@
-//V18
-//Coordinates
-//Item system
+//pat V19
+//Showed the items you pick up
 
 console.log("Welcome to Terminus.JS");
 
@@ -12,6 +11,7 @@ function hints(force = 0) {
         "help() can update its contents based on the things you have purchased.",
         "You can change your difficulty by calling difficultyset(number)",
         "You can get more hints by calling hints().",
+        "Use clear() to clear the console if it gets too cluttered."
     ];
     console.log(list[Math.floor(Math.random() * list.length)]);
 }
@@ -95,6 +95,7 @@ let game = events({
     rechargerate: 1,
     antipower: 10,
     itemduration: 0,
+    totalencounters: 0,
     pointcalc: () => {
         if (game.pointcalcstatus === true) {
             game.pointcalcstatus = false
@@ -144,6 +145,7 @@ function fight() {
         console.log("You are not in combat.")
     }
     else {
+        game.totalencounters = game.totalencounters + 1
         let bar = randomnumbah(1, foo)
         let foo = (1 / game.enemies.difficulty) * dangerlevel;
         if (bar === foo) {
@@ -155,6 +157,7 @@ function fight() {
             game.points = (game.enemies.difficulty * game.points)
         }
     }
+    game.incombat = false
 }
 let baz
 function roam() {
@@ -163,6 +166,19 @@ function roam() {
     if (founditem === itemkey.totalitems) {
         itemkey.helditem = founditem
         console.log("woag you found item") //omg you foundies itemer
+        if (founditem === 1) {
+            console.log("You found ", itemkey.itemid1.name)
+            console.log("'", itemkey.itemid1)
+        }
+        if (founditem === 2) {
+            console.log("You found ", itemkey.itemid2.name)
+            console.log("'", itemkey.itemid2)
+        }
+        if (founditem === 3) {
+            console.log("You found ", itemkey.itemid3.name)
+            console.log("'", itemkey.itemid3)
+        }
+
     }
     if (encounteredenemy === 1) {
         game.incombat = true;
@@ -170,7 +186,6 @@ function roam() {
         console.log("You have encountered an enemy!");
         console.log("The enemy points are: ", baz )
         console.log("You can either use 'fight()' or 'run()' to determine how you want to act.")
-        
     }
 }
 let itemkey = {
@@ -225,6 +240,7 @@ function help() {
         "discord().............Gives a link to the terminus.js discord.",
         "hints()...............Shows a hint.",
         "achievements()........Shows achievements.",
+        "roam()................Move around for a chance at encountering an enemy or finding an item.",
     ];
     44; //huh? -Rando
     if (game.unlocks.infshop) {
@@ -577,3 +593,18 @@ function maxpowerup() {
 function helloworld() {
     console.log("Hello world!");
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//:3
